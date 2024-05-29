@@ -1,10 +1,10 @@
 # GENPAT Wiki Engine
 
-Mkdocs based engine to produce wiki and PDF document from a set of markdown files.
+Mkdocs based engine to produce wiki and PDF documents from a set of markdown files.
 
 ## docker 
 
-Go in the directory with `mkdocs.yml` file (see `examples` dir). Then
+Go to the directory with `mkdocs.yml` file (see `examples` dir). Then
 
 ```sh
 # basic launch with serve at 8001 port
