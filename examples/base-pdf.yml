@@ -1,0 +1,26 @@
+site_name: Example, Wiki
+site_url: http://localhost:8000/
+site_description: Example description
+site_author: Unità Bionformatica
+# when setted to true the url will point to the folder [about/]
+# if false will point to the index inside the folder [about/index.html]
+# it is important to set false if you want to serve file locally with no server
+use_directory_urls: false
+
+theme:
+    name: mkdocs
+    highlightjs: false
+
+markdown_extensions:
+    codehilite:
+        use_pygments: true
+    toc:
+        permalink: []
+# pygmentize -S default -f html -a .codehilite > styles.css
+# to generate css file for code higlighting
+
+extra:
+  lang: it_IT
+
+extra_javascript:
+    - js/mermaid.min.js

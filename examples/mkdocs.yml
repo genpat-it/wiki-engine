@@ -1,0 +1,3 @@
+INHERIT: base.yml
+
+docs_dir: docs

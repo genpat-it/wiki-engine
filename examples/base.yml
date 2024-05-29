@@ -1,0 +1,38 @@
+site_name: Example, Wiki
+site_url: http://localhost:8000/
+site_description: Example description
+site_author: Unità Bionformatica
+# when setted to true the url will point to the folder [about/]
+# if false will point to the index inside the folder [about/index.html]
+# it is important to set false if you want to serve file locally with no server
+use_directory_urls: false
+
+theme:
+  name: bioinformatic-izsam-theme
+  locale: it
+  custom_dir: example_theme/
+
+extra:
+  platform_title: Example
+  header_tool_label: Wiki
+  header_tool_label_mobile: Wiki
+
+markdown_extensions:
+    codehilite:
+        use_pygments: true
+    plantuml_markdown:
+        server: ''
+    toc:
+        permalink: []
+        toc_depth: "2-3"
+# pygmentize -S default -f html -a .codehilite > styles.css
+# to generate css file for code higlighting
+
+plugins:
+    - izsam-search:
+        separator: '[\s\-\.\-\_]+'
+        min_search_length: 2
+    - mkdocs-izsam-video
+
+extra_javascript:
+    - js/mermaid.min.js

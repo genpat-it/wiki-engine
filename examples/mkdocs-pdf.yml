@@ -1,0 +1,22 @@
+INHERIT: base-pdf.yml
+
+docs_dir: docs
+
+plugins:
+    - with-pdf:
+        author: Unità Bioinformatica
+        copyright: © IZSAM "G. Caporale"
+        cover: true
+        back_cover: true
+        cover_title: Example title
+        cover_subtitle: Example subtitle
+        cover_logo: ../pdf-theme/img/piattaforma-genpat-logo-pdf.png
+        custom_template_path: pdf-theme
+        toc_title: Index
+        heading_shift: true
+        toc_level: 3
+        ordered_chapter_level: 3
+        two_columns_level: 0
+        output_path: ../pdf/pdf-user/cohesive-data-platform-wiki.pdf
+        debug_html: true
+        verbose: true
