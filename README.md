@@ -1,9 +1,15 @@
-# Mkdocs
+# GENPAT Wiki Engine
 
-Questo repository contiene le definizioni (Dockerfile) di un'immagine docker con cui è possibile eseguire il seguente tool:
+Mkdocs based engine to produce wiki and PDF document from a set of markdown files.
 
-`mkdocs`
+## docker 
 
-alla versione
+Go in the directory with `mkdocs.yml` file (see `examples` dir). Then
 
-1.2.2
+```sh
+# basic launch with serve at 8001 port
+docker run --env HOME=/home/$USER -it -u `id -u`:`id -g` -p 8001:8000 --rm -v $(pwd):/home/$USER -w /home/$USER ghcr.io/genpat-it/wiki-engine:main sh -c 'mkdocs serve --watch-theme -f mkdocs.yml -a 0.0.0.0:8000 '
+
+# launch with watch-theme option
+docker run --env HOME=/home/$USER -it -u `id -u`:`id -g` -p 8001:8000 --rm -v $(pwd):/home/$USER -w /home/$USER ghcr.io/genpat-it/wiki-engine:main sh -c 'mkdocs serve --watch-theme -f mkdocs.yml -a 0.0.0.0:8000 '
+```
