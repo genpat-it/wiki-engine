@@ -87,12 +87,12 @@ jobs:
       # repository is public to avoid leaking data.  If you would like to publish
       # transparency data even for private images, pass --force to cosign below.
       # https://github.com/sigstore/cosign
-      - name: Sign the published Docker image
-        if: ${{ github.event_name != 'pull_request' }}
-        env:
-          # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
-          TAGS: ${{ steps.meta.outputs.tags }}
-          DIGEST: ${{ steps.build-and-push.outputs.digest }}
-        # This step uses the identity token to provision an ephemeral certificate
-        # against the sigstore community Fulcio instance.
-        run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
+### ADP: avoid error 123: Invalid Key ###       - name: Sign the published Docker image
+### ADP: avoid error 123: Invalid Key ###               if: ${{ github.event_name != 'pull_request' }}
+### ADP: avoid error 123: Invalid Key ###               env:
+### ADP: avoid error 123: Invalid Key ###                 # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
+### ADP: avoid error 123: Invalid Key ###                 TAGS: ${{ steps.meta.outputs.tags }}
+### ADP: avoid error 123: Invalid Key ###                 DIGEST: ${{ steps.build-and-push.outputs.digest }}
+### ADP: avoid error 123: Invalid Key ###               # This step uses the identity token to provision an ephemeral certificate
+### ADP: avoid error 123: Invalid Key ###               # against the sigstore community Fulcio instance.
+### ADP: avoid error 123: Invalid Key ###               run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
