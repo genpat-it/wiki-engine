@@ -23,8 +23,13 @@ RUN apt-get update && \
     libfribidi-dev \
     libglib2.0-0 \
     libmagic1 \
-    pandoc \
+    wget \
     && apt-get clean
+
+# pandoc 2.5
+RUN wget https://github.com/jgm/pandoc/releases/download/2.5/pandoc-2.5-1-amd64.deb && \
+    dpkg -i pandoc-2.5-1-amd64.deb && \
+    rm pandoc-2.5-1-amd64.deb
 
 # Install MkDocs and the specified plugins and extensions
 RUN pip install --no-cache-dir mkdocs==1.2.4 \
