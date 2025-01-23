@@ -5,7 +5,8 @@ A Docker-based documentation system combining MkDocs and Word document generatio
 ## Quick Start
 
 Assume your wiki is in `/your_wiki` folder.
-It's important to mount that folder in the `/wiki` docker folder.
+
+> **Important:** It's crucial to mount that folder in the `/wiki` docker folder.
 
 ### Build the docker image
 
