@@ -7,6 +7,13 @@ A Docker-based documentation system combining MkDocs and Word document generatio
 Assume your wiki is in `/your_wiki` folder.
 It's important to mount that folder in the `/wiki` docker folder.
 
+### Build the docker image
+
+Build:
+```bash
+docker build -t wiki-engine .
+```
+
 ### Use mkdocs
 
 ```bash
@@ -16,11 +23,6 @@ docker run -it --rm -u $(id -u):$(id -g) -v /your_wiki:/wiki wiki-engine mkdocs 
 Your mkdocs output will be available at `target/mkdocs` folder.
 
 ### Build docx and html outputs
-
-Build:
-```bash
-docker build -t wiki-engine .
-```
 
 Run:
 ```bash
