@@ -1,0 +1,23 @@
+# when setted to true the url will point to the folder [about/]
+# if false will point to the index inside the folder [about/index.html]
+# it is important to set false if you want to serve file locally with no server
+use_directory_urls: false
+
+markdown_extensions:
+    codehilite:
+        use_pygments: true
+    plantuml_markdown:
+        server: ""
+    toc:
+        permalink: []
+        toc_depth: "2-3"
+# pygmentize -S default -f html -a .codehilite > styles.css
+# to generate css file for code higlighting
+
+plugins:
+    - izsam-search:
+          separator: '[\s\-\.\-\_]+'
+          min_search_length: 2
+    - mkdocs-izsam-video
+    - macros:
+        module_name: /app/init/macros/main

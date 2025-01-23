@@ -1,0 +1,1 @@
+pandoc $1  -f markdown -t docx  > /tmp/out.docx; soffice /tmp/out.docx &
