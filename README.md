@@ -19,7 +19,7 @@ docker build -t wiki-engine .
 docker run -it --rm -u $(id -u):$(id -g) -v /your_wiki:/wiki wiki-engine mkdocs build -f /wiki/mkdocs.yml --site-dir /wiki/target/mkdocs
 ```
 
-Your mkdocs output will be available at `target/mkdocs` folder.
+Your mkdocs output will be available at `/your_wiki/target/mkdocs` folder.
 
 ### Build docx and html outputs
 
@@ -28,7 +28,7 @@ Run:
 docker run -it --rm -u $(id -u):$(id -g) -v /your_wiki:/wiki wiki-engine build
 ```
 
-Your output will be available at `target/docx` and  `target/html` folders.
+Your output will be available at `/your_wiki/target/docx` and  `/your_wiki/target/html` folders.
 
 ## Directory Structure of your wiki
 
