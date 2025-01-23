@@ -35,7 +35,6 @@ Your output will be available at `target/docx` and  `target/html` folders.
 /your_wiki/
 ├── docs/          # Markdown files
 ├── fonts/         # Custom fonts
-├── media/         # Custom media
 ├── templates/     # Word templates
 ├── theme/         # Website theme
 ├── mkdocs.yml     # MkDocs configuration
