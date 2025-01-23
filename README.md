@@ -9,7 +9,6 @@ It's important to mount that folder in the `/wiki` docker folder.
 
 ### Build the docker image
 
-Build:
 ```bash
 docker build -t wiki-engine .
 ```
