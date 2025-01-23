@@ -50,8 +50,7 @@ Your output will be available at `target/docx` and  `target/html` folders.
 - Supports custom fonts and themes
 - Preserves user permissions with proper UID/GID mapping
 - Converts markdown to HTML and DOCX formats
-- Uses EFSA Word template styles
-
+  
 ## Prerequisites
 
 - Docker
