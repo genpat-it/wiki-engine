@@ -128,7 +128,7 @@ sub ref_based_pandoc_html2docx{
 	my $str="";
 	while(<F>){
 		$r=$_;
-		$r=~  s|(<img .*?src=")\./media|$1./app/wiki/target/tmp/media|g ;
+		$r=~  s|(<img .*?src=")\./media|$1./wiki/target/tmp/media|g ;
 		$str .= $r;
 	}
 	close(F);
