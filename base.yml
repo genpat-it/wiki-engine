@@ -20,4 +20,4 @@ plugins:
           min_search_length: 2
     - mkdocs-izsam-video
     - macros:
-        module_name: /app/init/macros/main
+        module_name: /app/plugins/init/main
