@@ -1,79 +1,57 @@
-Here's an improved and polished version of your README:
+# Wiki Engine
 
----
+A Docker-based documentation system combining MkDocs and Word document generation.
 
-# **Wiki Engine**
+## Quick Start
 
-A lightweight Docker-based documentation system that combines **MkDocs** for website generation with tools to create Word documents from Markdown.
+Assume your wiki is in `/your_wiki` folder.
+It's important to mount that folder in the `/wiki` docker folder.
 
-## **Quick Start**
+### Use mkdocs
 
-### **Build the Docker Image**
-First, build the Docker image for the Wiki Engine:
+```bash
+docker run -it --rm -u $(id -u):$(id -g) -v /your_wiki:/wiki wiki-engine mkdocs build -f /wiki/mkdocs.yml --site-dir /wiki/target/mkdocs
+```
+
+Your mkdocs output will be available at `target/mkdocs` folder.
+
+### Build docx and html outputs
+
+Build:
 ```bash
 docker build -t wiki-engine .
 ```
 
-### **Use MkDocs**
-To generate a static website from your Markdown files, use the following command. Make sure to replace `/your_wiki` with the path to your wiki directory:
+Run:
 ```bash
-docker run -it --rm -u $(id -u):$(id -g) \
-  -v /your_wiki:/wiki \
-  wiki-engine mkdocs build -f /wiki/mkdocs.yml --site-dir /wiki/target/mkdocs
+docker run -it --rm -u $(id -u):$(id -g) -v /your_wiki:/wiki wiki-engine build
 ```
 
-Your MkDocs-generated website will be available in the `target/mkdocs` folder.
+Your output will be available at `target/docx` and  `target/html` folders.
 
-### **Build DOCX and HTML Outputs**
-To generate both Word documents and HTML files:
-```bash
-docker run -it --rm -u $(id -u):$(id -g) \
-  -v /your_wiki:/wiki \
-  wiki-engine build
-```
-
-## **Directory Structure**
-
-Organize your wiki content in the following structure for best results:
+## Directory Structure of your wiki
 
 ```
 /your_wiki/
-├── docs/          # Markdown source files
-├── fonts/         # Custom fonts for Word documents
-├── templates/     # Word templates for styling
-├── theme/         # Custom website themes
-├── mkdocs.yml     # MkDocs configuration file
-└── target/        # Output directory for builds
+├── docs/          # Markdown files
+├── fonts/         # Custom fonts
+├── templates/     # Word templates
+├── theme/         # Website theme
+├── mkdocs.yml     # MkDocs configuration
+└── target/        # Build output
     ├── docx/      # Generated Word documents
-    └── html/      # Generated static website
+    └── html/      # Generated website
 ```
 
-## **Features**
+## Features
 
-- **Dual Output**: Generates both a static website and Word documents from your Markdown files.
-- **Customizable**:
-  - Use your own fonts for Word documents.
-  - Apply custom themes for the website.
-- **Preserves User Permissions**: Maps UID/GID to ensure files match your local user.
-- **Flexible Formats**:
-  - Converts Markdown to **HTML** for websites.
-  - Converts Markdown to **DOCX** using EFSA Word template styles.
-- **Fast and Lightweight**: Docker-based setup simplifies dependencies and environment management.
+- Generates both website and Word documentation
+- Supports custom fonts and themes
+- Preserves user permissions with proper UID/GID mapping
+- Converts markdown to HTML and DOCX formats
+- Uses EFSA Word template styles
 
-## **Prerequisites**
+## Prerequisites
 
-To use Wiki Engine, ensure the following are installed on your system:
-- **Docker**: To run the containerized engine.
-- **Write Permissions**: The `/your_wiki` directory must allow read and write access.
-
-## **Usage Notes**
-- The `-u $(id -u):$(id -g)` flag ensures that generated files match the user and group of the host system.
-- Mounting `/your_wiki` ensures your content is processed and outputs are stored in the correct location.
-
-## **Contributing**
-
-We welcome contributions! Please submit pull requests or file issues on our [GitHub repository](#).
-
-## **License**
-
-This project is licensed under the [MIT License](LICENSE).
+- Docker
+- Write permissions in the wiki directory
