@@ -123,17 +123,30 @@ sub change_html_correcting_pandoc_error{
 	str2file($file_html_changed, $str);
 }#---------------------------------------------
 
-sub ref_based_pandoc_html2docx{
-	open(F,$file_html);
-	my $str="";
-	while(<F>){
-		$r=$_;
-		$r=~  s|(<img .*?src=")\./media|$1./wiki/target/tmp/media|g ;
-		$str .= $r;
-	}
-	close(F);
-	runbash("pandoc  $file_html_changed -f html -t docx  --reference-doc $template > $file_out;");
-}#---------------------------------------------
+sub ref_based_pandoc_html2docx {
+    # Open the HTML file for reading
+    open(F, $file_html_changed) or die "Cannot open file $file_html_changed: $!";
+    my $str = "";
+
+    # Read the file line by line and perform the replacement
+    while (<F>) {
+        my $r = $_;
+
+        # Replace all occurrences of "./media/" with "/wiki/target/tmp/media/"
+        $r =~ s|\./media/|/wiki/target/tmp/media/|g;
+
+        # Append the modified line to the accumulated string
+        $str .= $r;
+    }
+    close(F);
+
+    # Write the modified content back to the file
+    str2file($file_html_changed, $str);
+
+    # Execute the Pandoc command to generate the .docx file
+    runbash("pandoc $file_html_changed -f html -t docx --reference-doc $template > $file_out;");
+} #---------------
+
 
 sub print_output{
 	print "\n\nOPEN FILE DOCX:\nsoffice $file_out\n";
