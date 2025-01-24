@@ -28,4 +28,4 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: ghcr.io/${{ github.repository }}:${{ steps.extract_version.outputs.tag }}
+          tags: ghcr.io/${{ github.repository }}-wiki-engine:${{ steps.extract_version.outputs.tag }}
