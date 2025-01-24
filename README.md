@@ -10,9 +10,25 @@ Assume your wiki is in `/your_wiki` folder.
 
 ### Build the docker image
 
+#### Cloning the repo
+
 ```bash
+git clone https://github.com/genpat-it/wiki-engine
+cd wiki-engine
 docker build -t wiki-engine .
 ```
+
+#### Using the GitHub Registry
+
+```bash
+docker pull ghcr.io/genpat-it/wiki-engine:latest
+docker build -t ghcr.io/genpat-it/wiki-engine .
+docker tag ghcr.io/genpat-it/wiki-engine wiki-engine
+```
+
+#### Windows Users
+
+For Windows users, it is **recommended to use PowerShell** when running Docker commands. PowerShell provides a more consistent environment for managing Docker, especially when working with paths and volume mounts.
 
 ### Use mkdocs
 
