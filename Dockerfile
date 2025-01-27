@@ -33,14 +33,12 @@ RUN apt-get update && apt-get install -y wget && apt-get clean && \
         wget https://github.com/jgm/pandoc/releases/download/2.5/pandoc-2.5-1-amd64.deb && \
         dpkg -i pandoc-2.5-1-amd64.deb && \
         rm pandoc-2.5-1-amd64.deb; \
-    elif [ "$(uname -m)" = "arm64" ]; then \
-        wget https://github.com/jgm/pandoc/releases/download/2.5/pandoc-2.5-macOS.zip && \
-        unzip pandoc-2.5-macOS.zip -d /usr/local/bin && \
-        rm pandoc-2.5-macOS.zip; \
-    elif [ "$(uname -m)" = "aarch64" ]; then \
-        wget https://github.com/jgm/pandoc/releases/download/2.5/pandoc-2.5-macOS.zip && \
-        unzip pandoc-2.5-macOS.zip -d /usr/local/bin && \
-        rm pandoc-2.5-macOS.zip; \
+    elif [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "arm64" ]; then \
+        wget https://github.com/jgm/pandoc/releases/download/2.5/pandoc-2.5-linux.tar.gz && \
+        tar xvfz pandoc-2.5-linux.tar.gz && \
+        mv pandoc-2.5/bin/pandoc /usr/local/bin/ && \
+        mv pandoc-2.5/bin/pandoc-citeproc /usr/local/bin/ && \
+        rm -rf pandoc-2.5 pandoc-2.5-linux.tar.gz; \
     else \
         echo "Unsupported architecture"; \
         exit 1; \
