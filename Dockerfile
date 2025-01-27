@@ -26,12 +26,21 @@ RUN apt-get update && \
     wget \
     && apt-get clean
 
-# pandoc 2.5
+# Detect architecture and install the correct version of Pandoc
 RUN apt-get update && apt-get install -y wget && apt-get clean && \
-    ARCH=$(dpkg --print-architecture) && \
-    wget https://github.com/jgm/pandoc/releases/download/2.5/pandoc-2.5-1-${ARCH}.deb && \
-    dpkg -i pandoc-2.5-1-${ARCH}.deb && \
-    rm pandoc-2.5-1-${ARCH}.deb
+    if [ "$(uname -m)" = "x86_64" ]; then \
+        wget https://github.com/jgm/pandoc/releases/download/2.5/pandoc-2.5-1-amd64.deb && \
+        dpkg -i pandoc-2.5-1-amd64.deb && \
+        rm pandoc-2.5-1-amd64.deb; \
+    elif [ "$(uname -m)" = "arm64" ]; then \
+        wget https://github.com/jgm/pandoc/releases/download/2.5/pandoc-2.5-macOS.zip && \
+        unzip pandoc-2.5-macOS.zip -d /usr/local/bin && \
+        rm pandoc-2.5-macOS.zip; \
+    else \
+        echo "Unsupported architecture"; \
+        exit 1; \
+    fi
+
 
 # Install MkDocs and the specified plugins and extensions
 RUN pip install --no-cache-dir mkdocs==1.2.4 \
@@ -58,6 +67,8 @@ RUN echo '<?xml version="1.0"?><!DOCTYPE fontconfig SYSTEM "fonts.dtd"><fontconf
 
 # Set execute permissions only for .sh and .pl files
 RUN find /app/bin -type f \( -name "*.sh" \) -exec chmod +x {} \;
+
+EXPOSE 8000
 
 # Set the entrypoint to the shell script
 ENTRYPOINT ["/app/entrypoint.sh"]
