@@ -27,9 +27,11 @@ RUN apt-get update && \
     && apt-get clean
 
 # pandoc 2.5
-RUN wget https://github.com/jgm/pandoc/releases/download/2.5/pandoc-2.5-1-amd64.deb && \
-    dpkg -i pandoc-2.5-1-amd64.deb && \
-    rm pandoc-2.5-1-amd64.deb
+RUN apt-get update && apt-get install -y wget && apt-get clean && \
+    ARCH=$(dpkg --print-architecture) && \
+    wget https://github.com/jgm/pandoc/releases/download/2.5/pandoc-2.5-1-${ARCH}.deb && \
+    dpkg -i pandoc-2.5-1-${ARCH}.deb && \
+    rm pandoc-2.5-1-${ARCH}.deb
 
 # Install MkDocs and the specified plugins and extensions
 RUN pip install --no-cache-dir mkdocs==1.2.4 \
