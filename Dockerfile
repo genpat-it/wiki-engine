@@ -24,6 +24,7 @@ RUN apt-get update && \
     libglib2.0-0 \
     libmagic1 \
     wget \
+    unzip \
     && apt-get clean
 
 # Detect architecture and install the correct version of Pandoc
