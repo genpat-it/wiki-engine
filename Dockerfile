@@ -1,10 +1,12 @@
-FROM debian:bullseye-slim
+# Use Python 3.9 as the base image
+FROM python:3.9-slim
 
-# Install dependencies
-RUN apt-get update && apt-get install -y \
-    python3 \
-    python3-pip \
-    wget \
+# Set the working directory
+WORKDIR /app
+
+# Install system dependencies for WeasyPrint
+RUN apt-get update && \
+    apt-get install -y \
     build-essential \
     libpango1.0-0 \
     libcairo2 \
@@ -20,16 +22,30 @@ RUN apt-get update && apt-get install -y \
     libharfbuzz-dev \
     libfribidi-dev \
     libglib2.0-0 \
-    libmagic1 && \
-    apt-get clean && \
-    ln -s /usr/bin/python3 /usr/bin/python
+    libmagic1 \
+    wget \
+    && apt-get clean
 
-# Install Pandoc
-RUN wget https://github.com/jgm/pandoc/releases/download/2.5/pandoc-2.5-1-amd64.deb && \
-    dpkg -i pandoc-2.5-1-amd64.deb && \
-    rm pandoc-2.5-1-amd64.deb
+# Detect architecture and install the correct version of Pandoc
+RUN apt-get update && apt-get install -y wget && apt-get clean && \
+    if [ "$(uname -m)" = "x86_64" ]; then \
+        wget https://github.com/jgm/pandoc/releases/download/2.5/pandoc-2.5-1-amd64.deb && \
+        dpkg -i pandoc-2.5-1-amd64.deb && \
+        rm pandoc-2.5-1-amd64.deb; \
+    elif [ "$(uname -m)" = "arm64" ]; then \
+        wget https://github.com/jgm/pandoc/releases/download/2.5/pandoc-2.5-macOS.zip && \
+        unzip pandoc-2.5-macOS.zip -d /usr/local/bin && \
+        rm pandoc-2.5-macOS.zip; \
+    elif [ "$(uname -m)" = "aarch64" ]; then \
+        wget https://github.com/jgm/pandoc/releases/download/2.5/pandoc-2.5-macOS.zip && \
+        unzip pandoc-2.5-macOS.zip -d /usr/local/bin && \
+        rm pandoc-2.5-macOS.zip; \
+    else \
+        echo "Unsupported architecture"; \
+        exit 1; \
+    fi
 
-# Install Python packages
+# Install MkDocs and the specified plugins and extensions
 RUN pip install --no-cache-dir mkdocs==1.2.4 \
     mkdocs-izsam-search==0.1.8 \
     mkdocs-bionformatic-izsam-theme==0.2.8 \
@@ -44,23 +60,20 @@ RUN pip install --no-cache-dir mkdocs==1.2.4 \
     qrcode==7.3.1 \
     weasyprint==62.3
 
-# Set working directory
-WORKDIR /app
-
-# Copy project files
+# Copy the bin folder (including sh directory) into the Docker image
 COPY . /app
 
-# Make entrypoint script executable
+# Ensure the entrypoint.sh file has the correct permissions to be executed
 RUN chmod +x /app/entrypoint.sh
 
-# Configure font and cache
+# Create the fonts and cache directories
 RUN echo '<?xml version="1.0"?><!DOCTYPE fontconfig SYSTEM "fonts.dtd"><fontconfig><dir recursive="yes">/wiki/fonts</dir><cachedir>/wiki/cache</cachedir></fontconfig>' > /etc/fonts/fonts.conf
 
-# Fix permissions for scripts
+# Set execute permissions only for .sh and .pl files
 RUN find /app/bin -type f \( -name "*.sh" \) -exec chmod +x {} \;
 
-# Expose port 8000
+# Expose the application port
 EXPOSE 8000
 
-# Set entrypoint
+# Set the entrypoint to the shell script
 ENTRYPOINT ["/app/entrypoint.sh"]
