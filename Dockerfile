@@ -23,6 +23,8 @@ RUN apt-get update && \
     libfribidi-dev \
     libglib2.0-0 \
     libmagic1 \
+    openjdk-17-jre-headless \
+    plantuml \
     wget \
     unzip \
     && apt-get clean
@@ -38,7 +40,7 @@ RUN apt-get update && apt-get install -y wget && apt-get clean && \
 # Install MkDocs and the specified plugins and extensions
 RUN pip install --no-cache-dir mkdocs==1.2.4 \
     mkdocs-izsam-search==0.1.8 \
-    mkdocs-bionformatic-izsam-theme==0.2.8 \
+    mkdocs-bionformatic-izsam-theme==1.0.0 \
     mkdocs-izsam-video==1.0.3 \
     mkdocs-redirects==1.2.0 \
     mkdocs-izsam-mermaid-to-images==1.0.8 \
@@ -52,6 +54,15 @@ RUN pip install --no-cache-dir mkdocs==1.2.4 \
 
 # Copy the bin folder (including sh directory) into the Docker image
 COPY . /app
+
+# Check if the my_mkdocs_plugins directory exists and install custom MkDocs plugins if it does
+RUN if [ -d "/app/my_mkdocs_plugins" ]; then \
+        cd /app/my_mkdocs_plugins && \
+        pip install -e . ; \
+    fi
+
+# Set the working directory back to /app
+WORKDIR /app
 
 # Ensure the entrypoint.sh file has the correct permissions to be executed
 RUN chmod +x /app/entrypoint.sh
