@@ -5,7 +5,29 @@ A Docker-based documentation system combining MkDocs and Word document generatio
 ## Quick Start
 
 Assume your wiki is in `/your_wiki` folder.
-It's important to mount that folder in the `/wiki` docker folder.
+
+> **Important:** It's crucial to mount that folder in the `/wiki` docker folder.
+
+### Build the docker image
+
+#### Cloning the repo
+
+```bash
+git clone https://github.com/genpat-it/wiki-engine
+cd wiki-engine
+docker build -t wiki-engine .
+```
+
+#### Using the GitHub Registry
+
+```bash
+docker pull ghcr.io/genpat-it/wiki-engine:latest
+docker tag ghcr.io/genpat-it/wiki-engine wiki-engine
+```
+
+#### Windows Users
+
+For Windows users, it is **recommended to use PowerShell** when running Docker commands. PowerShell provides a more consistent environment for managing Docker, especially when working with paths and volume mounts.
 
 ### Use mkdocs
 
@@ -13,21 +35,16 @@ It's important to mount that folder in the `/wiki` docker folder.
 docker run -it --rm -u $(id -u):$(id -g) -v /your_wiki:/wiki wiki-engine mkdocs build -f /wiki/mkdocs.yml --site-dir /wiki/target/mkdocs
 ```
 
-Your mkdocs output will be available at `target/mkdocs` folder.
+Your mkdocs output will be available at `/your_wiki/target/mkdocs` folder.
 
 ### Build docx and html outputs
-
-Build:
-```bash
-docker build -t wiki-engine .
-```
 
 Run:
 ```bash
 docker run -it --rm -u $(id -u):$(id -g) -v /your_wiki:/wiki wiki-engine build
 ```
 
-Your output will be available at `target/docx` and  `target/html` folders.
+Your output will be available at `/your_wiki/target/docx` and  `/your_wiki/target/html` folders.
 
 ## Directory Structure of your wiki
 
@@ -49,8 +66,7 @@ Your output will be available at `target/docx` and  `target/html` folders.
 - Supports custom fonts and themes
 - Preserves user permissions with proper UID/GID mapping
 - Converts markdown to HTML and DOCX formats
-- Uses EFSA Word template styles
-
+  
 ## Prerequisites
 
 - Docker

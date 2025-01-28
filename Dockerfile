@@ -24,12 +24,16 @@ RUN apt-get update && \
     libglib2.0-0 \
     libmagic1 \
     wget \
+    unzip \
     && apt-get clean
 
-# pandoc 2.5
-RUN wget https://github.com/jgm/pandoc/releases/download/2.5/pandoc-2.5-1-amd64.deb && \
-    dpkg -i pandoc-2.5-1-amd64.deb && \
-    rm pandoc-2.5-1-amd64.deb
+# Detect architecture and install the correct version of Pandoc
+RUN apt-get update && apt-get install -y wget && apt-get clean && \
+    wget https://github.com/jgm/pandoc/releases/download/2.5/pandoc-2.5-linux.tar.gz && \
+    tar xvfz pandoc-2.5-linux.tar.gz && \
+    mv pandoc-2.5/bin/pandoc /usr/local/bin/ && \
+    mv pandoc-2.5/bin/pandoc-citeproc /usr/local/bin/ && \
+    rm -rf pandoc-2.5 pandoc-2.5-linux.tar.gz;
 
 # Install MkDocs and the specified plugins and extensions
 RUN pip install --no-cache-dir mkdocs==1.2.4 \
@@ -49,6 +53,7 @@ RUN pip install --no-cache-dir mkdocs==1.2.4 \
 # Copy the bin folder (including sh directory) into the Docker image
 COPY . /app
 
+# Ensure the entrypoint.sh file has the correct permissions to be executed
 RUN chmod +x /app/entrypoint.sh
 
 # Create the fonts and cache directories
@@ -56,6 +61,9 @@ RUN echo '<?xml version="1.0"?><!DOCTYPE fontconfig SYSTEM "fonts.dtd"><fontconf
 
 # Set execute permissions only for .sh and .pl files
 RUN find /app/bin -type f \( -name "*.sh" \) -exec chmod +x {} \;
+
+# Expose the application port
+EXPOSE 8000
 
 # Set the entrypoint to the shell script
 ENTRYPOINT ["/app/entrypoint.sh"]

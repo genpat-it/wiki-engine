@@ -1,0 +1,43 @@
+INHERIT: /app/base.yml
+
+docs_dir: docs
+
+site_name: EFSA WGS System, User manual
+site_url: https://www.genpat.izs.it/wiki/
+site_description: Wiki
+site_author: Bioinformatic Unit
+
+extra:
+  platform_title: Piattaforma GenPat, Wiki
+  language: it
+  useful_links:
+    link_1:
+      label: CRN Sequenze Genomiche
+      url: https://www.izs.it/IZS/Eccellenza/Centri_nazionali/CRN_-_Sequenze_Genomiche
+    link_2:
+      label: IZSAM "G. Caporale"
+      url: https://www.izs.it
+  support:
+    support_1:
+      label: bioinformatica@izs.it
+      url: mailto:bioinformatica@izs.it
+    support_2:
+      label: +39 0861 3321
+      url: tel:+3908613321
+  tools:
+    tool_1:
+      icon: iconic-print
+      label: Versione PDF
+      target: _blank
+      url: https://genpat.izs.it/genpat_wiki/en/pdf/genpat_platform_wiki.pdf
+  copyright: IZSAM "G. Caporale"
+
+theme:
+  name: null
+  custom_dir: theme
+  # when theme.name is set to null and the custom_dir is used to load the theme, mkdocs_theme.yml is not loaded and the configuration as to be declared here as in the following lines
+  include_search_page: true
+  search_index_only: true
+  navigation_depth: 3
+  static_templates:
+      - 404.html

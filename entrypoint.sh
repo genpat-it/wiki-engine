@@ -10,7 +10,7 @@ if [ "$1" = "build" ]; then
     
     # md2html2docx_ref
     echo "#####################################################"
-    echo "########## Running md2html2docx_ref.pl... ###########"
+    echo "########## Generating DOCX version... ###########"
     echo "#####################################################"
     mkdir -p /wiki/target/tmp /wiki/target/docx /wiki/target/html
     #cp -r /wiki/target/tmp/media /app/media
@@ -20,7 +20,7 @@ if [ "$1" = "build" ]; then
     
     #pandoc
     echo "########################################"
-    echo "########## Running pandoc... ###########"
+    echo "########## Generating HTML version... ###########"
     echo "########################################"
     pandoc -s /wiki/target/tmp/all_docs.md -o /wiki/target/html/out.html
     
