@@ -2,7 +2,7 @@ import markdown
 import os
 
 def define_env(env):
-    
+
     @env.macro
     def button(text, link):
         """
@@ -15,7 +15,8 @@ def define_env(env):
         Returns:
             str: HTML code for the button.
         """
-        return f'<button onclick="window.open(\'{link}\')">{text}</button>'
+        sanitized_link = link.replace("'", "\\'")
+        return f'<button onclick="window.open(\'{sanitized_link}\')">{text}</button>'
     
     @env.macro
     def image(src, alt, caption=None):
@@ -45,7 +46,7 @@ def define_env(env):
         Generates HTML code to embed a YouTube video.
         
         Args:
-            src (str): The source URL of the YouTube video.
+            src (str): The source URL of the YouTube video (embed URL format preferred).
             caption (str, optional): The caption for the video. Defaults to None.
         
         Returns:
@@ -81,7 +82,7 @@ def define_env(env):
         if caption:
             html_code = (
                 '<div class="video-container">'
-                    '<video controls="" style="width: 100%">'
+                    '<video controls="" style="width: 100%;">'
                         f'<source src="{src}" type="video/mp4">'
                     '</video>'
                     f'<a href="{src}">{caption}</a>'
@@ -90,7 +91,7 @@ def define_env(env):
         else:
             html_code = (
                 '<div class="video-container">'
-                    '<video controls="" style="width: 100%">'
+                    '<video controls="" style="width: 100%;">'
                         f'<source src="{src}" type="video/mp4">'
                     '</video>'
                 '</div>'
@@ -121,7 +122,7 @@ def define_env(env):
         Returns:
             str: HTML code for the footnote definition.
         """
-        return f'<span class="footnote-number" id="footnote-{number}"">[{number}]</span>'
+        return f'<span class="footnote-number" id="footnote-{number}">[{number}]</span>'
       
     @env.macro
     def get_media_url():
@@ -131,55 +132,44 @@ def define_env(env):
         Returns:
             str: The media URL.
         """
-        return env.conf['extra']['media_url']
+        try:
+            return env.conf['extra']['media_url']
+        except KeyError:
+            raise KeyError("The key 'media_url' is missing in 'env.conf['extra']'")
       
     @env.macro
     def list_contents(directory):
         """
-        Lists the contents of a given directory.
-        
+        Lists the contents of a given directory or a single Markdown file.
+
         Args:
-            directory (str): The directory to list the contents of.
-        
+            directory (str): The directory or file to process.
+
         Returns:
-            list: A list of contents found at the directory.
+            str: HTML content generated from Markdown files.
         """
-        # Get the directory of the current file (main.py)
+        # Get the base directory of the script
         base_dir = os.path.dirname(__file__)
-        
-        # Construct the absolute path to the directory
         absolute_path = os.path.join(base_dir, directory)
-        
-        # Check if the directory is a directory
+
         if os.path.isdir(absolute_path):
+            # Process directory
             html_content = ""
-            # Get and sort all .md files in the directory
             filenames = sorted([f for f in os.listdir(absolute_path) if f.endswith('.md')])
             for filename in filenames:
                 file_path = os.path.join(absolute_path, filename)
-                # Read the content of the Markdown file
                 with open(file_path, 'r', encoding='utf-8') as file:
                     markdown_content = file.read()
-                # Convert Markdown content to HTML
                 html_content += '<div class="expandable-content"><div class="expandable-trigger"></div>' + markdown.markdown(markdown_content) + '</div>'
-        else:
-            # Ensure the file exists at the constructed path
-            if not os.path.isfile(absolute_path):
-                raise FileNotFoundError(f"The file {absolute_path} does not exist.")
-            
-            # Read the content of the Markdown file
+        elif os.path.isfile(absolute_path) and absolute_path.endswith('.md'):
+            # Process single Markdown file
             with open(absolute_path, 'r', encoding='utf-8') as file:
                 markdown_content = file.read()
-            
-            # Convert Markdown content to HTML
             html_content = '<div class="expandable-content"><div class="expandable-trigger"></div>' + markdown.markdown(markdown_content) + '</div>'
-        
-        # Embed the HTML content within the steering committee HTML structure
-        html_code = (
-            f'{html_content}'
-        )
-        
-        return html_code
+        else:
+            raise FileNotFoundError(f"The directory or Markdown file '{absolute_path}' does not exist.")
+
+        return html_content
   
     @env.filter
     def get_keys(value):
