@@ -16,8 +16,3 @@ markdown_extensions:
         permalink: []
 # pygmentize -S default -f html -a .codehilite > styles.css
 # to generate css file for code higlighting
-
-plugins:
-    - mkdocs-izsam-video
-    - macros:
-        module_name: /app/plugins/init/main
