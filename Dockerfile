@@ -40,7 +40,7 @@ RUN apt-get update && apt-get install -y wget && apt-get clean && \
 # Install MkDocs and the specified plugins and extensions
 RUN pip install --no-cache-dir mkdocs==1.2.4 \
     mkdocs-izsam-search==0.1.8 \
-    mkdocs-bionformatic-izsam-theme==1.0.3 \
+    mkdocs-bionformatic-izsam-theme==1.0.4 \
     mkdocs-izsam-video==1.0.3 \
     mkdocs-redirects==1.2.0 \
     mkdocs-izsam-mermaid-to-images==1.0.8 \
