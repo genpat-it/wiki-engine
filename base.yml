@@ -19,5 +19,6 @@ plugins:
           separator: '[\s\-\.\-\_]+'
           min_search_length: 2
     - mkdocs-izsam-video
+    - set_home_page_plugin
     - macros:
         module_name: /app/plugins/init/main

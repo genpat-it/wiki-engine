@@ -55,11 +55,7 @@ RUN pip install --no-cache-dir mkdocs==1.2.4 \
 # Copy the bin folder (including sh directory) into the Docker image
 COPY . /app
 
-# Check if the my_mkdocs_plugins directory exists and install custom MkDocs plugins if it does
-RUN if [ -d "/app/my_mkdocs_plugins" ]; then \
-        cd /app/my_mkdocs_plugins && \
-        pip install -e . ; \
-    fi
+RUN pip install -e /app/plugins/custom
 
 # Set the working directory back to /app
 WORKDIR /app
