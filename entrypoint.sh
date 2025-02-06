@@ -14,7 +14,15 @@ if [ "$1" = "build" ]; then
     echo "#####################################################"
     mkdir -p /wiki/target/tmp /wiki/target/docx /wiki/target/html
     #cp -r /wiki/target/tmp/media /app/media
-    python /app/bin/concat_md_files.py
+
+    if [ "$2" = "--docs-dir" ] && [ -n "$3" ]; then
+        echo "Running concat_md_files.py with --docs-dir $3"
+        python /app/bin/concat_md_files.py --docs-dir "$3"
+    else
+        echo "Running concat_md_files.py with default docs-dir"
+        python /app/bin/concat_md_files.py
+    fi
+
     perl /app/bin/md2html2docx_ref.pl /wiki/target/tmp/all_docs.md /wiki/templates/template.docx
     mv /tmp/out.docx /wiki/target/docx/out.docx
     
@@ -28,7 +36,7 @@ if [ "$1" = "build" ]; then
     echo "##############################################"
     echo "########## Cleaning tmp folders... ###########"
     echo "##############################################"
-    rm -rf /wiki/target/tmp
+    # rm -rf /wiki/target/tmp
     rm -rf /wiki/cache
 
     echo -e "\n\n"

@@ -101,3 +101,45 @@ The subcategories list are made available as a `config.subfolder_paths` paramete
   const journalCategories = categoriesNode ? JSON.parse(categoriesNode.innerHTML.replace(/'/g, '"')) : undefined;
 </script>
 ```
+
+## Set Home page Plugin (mkdocs_set_home_page_plugin)
+
+The `SetHomePagePlugin` is a custom MkDocs plugin that allows you to set a custom home page for your documentation by creating a symbolic link to the specified home page file.
+
+### Configuration
+
+To configure the `SetHomePagePlugin`, add it to the `plugins` section of your `mkdocs.yml` file and specify the `home_page` in the `extra` section:
+
+```yaml
+plugins:
+  - set_home_page
+
+extra:
+  home_page: 'path/to/your/home_page.md'
+```
+
+#### Options
+
+* `home_page`: : The path to the Markdown file that you want to set as the home page. This path should be relative to the `docs_dir`.
+
+### Usage
+
+When the `home_page` option is specified, the plugin will create a symbolic link named `index.md` in the `docs_dir` that points to the specified home page file. If an `index.md` file already exists, it will be removed before creating the symbolic link.
+
+#### Example configuration
+
+```yaml
+site_name: Your Site Name
+
+plugins:
+  - set_home_page
+
+extra:
+  home_page: 'custom_home.md'
+
+nav:
+  - Home: index.md
+  - About: about.md
+```
+
+In this example, the `custom_home.md` file will be set as the home page of the documentation.

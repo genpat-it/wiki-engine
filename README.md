@@ -46,6 +46,12 @@ docker run -it --rm -u $(id -u):$(id -g) -v /your_wiki:/wiki wiki-engine build
 
 Your output will be available at `/your_wiki/target/docx` and  `/your_wiki/target/html` folders.
 
+If you want to indicate a specific folder, please add the `--docs-dir` parameter:
+
+```bash
+docker run -it --rm -u $(id -u):$(id -g) -v /your_wiki:/wiki wiki-engine build --docs-dir path/to/dir
+```
+
 ## Directory Structure of your wiki
 
 ```

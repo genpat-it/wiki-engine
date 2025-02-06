@@ -15,6 +15,42 @@ Replaces custom footnote references and definitions in the content with a simple
 - **Returns**: 
   - `str`: The content with footnote references and definitions replaced.
 
+#### `replace_youtube(content)`
+
+Removes the caption text from YouTube links if present, or leaves only the YouTube link if no caption text is present.
+
+- **Parameters**: 
+  - `content` (str): The content of a Markdown file.
+- **Returns**: 
+  - `str`: The content with YouTube links processed.
+
+#### `replace_video(content)`
+
+Removes the caption text from video links if present, or leaves only the video link if no caption text is present.
+
+- **Parameters**: 
+  - `content` (str): The content of a Markdown file.
+- **Returns**: 
+  - `str`: The content with video links processed.
+
+#### `replace_image(content)`
+
+Replaces image macros with the common Markdown syntax for images.
+
+- **Parameters**: 
+  - `content` (str): The content of a Markdown file.
+- **Returns**: 
+  - `str`: The content with image macros replaced.
+
+#### `replace_macros(content)`
+
+Removes all macros with or without parameters.
+
+- **Parameters**: 
+  - `content` (str): The content of a Markdown file.
+- **Returns**: 
+  - `str`: The content with all macros removed.
+
 #### `concatenate_md_files(input_dir, output_file)`
 
 Concatenates Markdown files from the `docs` directory within the specified input directory into a single output file. It also includes an optional `intro.md` file from the `templates` directory and replaces footnotes in the content.
@@ -52,5 +88,5 @@ python concat_md_files.py --output-dir /path/to/output --input-dir /path/to/inpu
   * Include intro.md from the templates directory if it exists.
   * Include index.md from the docs directory if it exists.
   * Include all other Markdown files from the docs directory, excluding index.md.
-  * Replace custom footnote references and definitions in the content.
+  * Replace custom macros in the content.
 4. Copy the media folder from the docs directory to the output directory if it exists.
