@@ -9,43 +9,42 @@ def replace_footnotes(content):
     return content
 
 def replace_youtube(content):
-    # Replace YouTube macros with caption text
-    content = re.sub(r"\{\{\s*youtube\(['\"]([^'\"]*)['\"],\s*['\"]([^'\"]*)['\"]\)\s*\}\}", r'[\2](\1)', content)
-    # Replace YouTube macros without caption text
-    content = re.sub(r"\{\{\s*youtube\(['\"]([^'\"]*)['\"]\)\s*\}\}", r'[video](\1)', content)
+    content = re.sub(r"\{\{\s*youtube\(['\"]([^'\"]+)['\"]\s*,\s*['\"]([^'\"]+)['\"]\)\s*\}\}", r'[\2](\1)', content)
+    content = re.sub(r"\{\{\s*youtube\(['\"]([^'\"]+)['\"]\)\s*\}\}", r'[\1](\1)', content)
     return content
 
 def replace_video(content):
-    # Replace video macros with caption text
-    content = re.sub(r"\{\{\s*video\(['\"]([^'\"]*)['\"],\s*['\"]([^'\"]*)['\"]\)\s*\}\}", r'[\2](\1)', content)
-    # Replace video macros without caption text
-    content = re.sub(r"\{\{\s*video\(['\"]([^'\"]*)['\"]\)\s*\}\}", r'[video](\1)', content)
+    content = re.sub(r"\{\{\s*video\(['\"]([^'\"]+)['\"]\s*,\s*['\"]([^'\"]+)['\"]\)\s*\}\}", r'[\2](\1)', content)
+    content = re.sub(r"\{\{\s*video\(['\"]([^'\"]+)['\"]\)\s*\}\}", r'[video](\1)', content)
     return content
 
 def replace_image(content):
-    # Replace image with caption and alternative text
-    content = re.sub(r"\{\{\s*image\(['\"]([^'\"]*)['\"],\s*['\"][^'\"]*['\"],\s*['\"][^'\"]*['\"]\)\s*\}\}", r'![](\1)', content)
-    # Replace image with alternative text only
-    content = re.sub(r"\{\{\s*image\(['\"]([^'\"]*)['\"],\s*['\"][^'\"]*['\"]\)\s*\}\}", r'![](\1)', content)
-    # Replace image with no additional text
-    content = re.sub(r"\{\{\s*image\(['\"]([^'\"]*)['\"]\)\s*\}\}", r'![](\1)', content)
+    # Matches image macros with any number of parameters and captures only the address
+    content = re.sub(r"\{\{\s*image\(['\"]([^'\"]+)['\"](?:,\s*['\"][^'\"]*['\"])*\s*\)\s*\}\}", r'![](\1)', content)
     return content
 
 def replace_button(content):
-    # Remove the button label and URL, handling optional spaces and parameters
-    content = re.sub(r"\{\{\s*button\(['\"]([^'\"]*)['\"](?:,\s*['\"]([^'\"]*)['\"])?\)\s*\}\}", '', content)
+    content = re.sub(r"\{\{\s*button\(['\"]([^'\"]+)['\"](?:,\s*['\"]([^'\"]*)['\"])?\)\s*\}\}", '', content)
     return content
 
 def replace_list_contents(content):
-    # Remove the list_contents with a directory
     content = re.sub(r"\{\{\s*list_contents\([^\)]*\)\s*\}\}", '', content)
-    # Remove the list_contents with no parameters
     content = re.sub(r"\{\{\s*list_contents\(\)\s*\}\}", '', content)
     return content
 
 def replace_macros(content):
-    # Remove all macros with or without parameters
+    # Remove all macros only if they were not handled by previous functions
     content = re.sub(r"\{\{\s*\w+\([^\)]*\)\s*\}\}", '', content)
+    return content
+
+def process_content(content):
+    content = replace_footnotes(content)
+    content = replace_youtube(content)
+    content = replace_video(content)
+    content = replace_image(content)
+    content = replace_button(content)
+    content = replace_list_contents(content)
+    content = replace_macros(content)  # Ensure this runs last
     return content
 
 def concatenate_md_files(input_dir, docs_dir, output_file):
@@ -53,37 +52,41 @@ def concatenate_md_files(input_dir, docs_dir, output_file):
     templates_dir = os.path.join(input_dir, 'templates')
     
     with open(output_file, 'w') as outfile:
-       intro_file = os.path.join(templates_dir, 'intro.md')
-       if os.path.exists(intro_file):
-           with open(intro_file, 'r') as infile:
-               content = replace_footnotes(infile.read())
-               outfile.write(content + '\n\n')
+        # Process intro.md if it exists
+        intro_file = os.path.join(templates_dir, 'intro.md')
+        if os.path.exists(intro_file):
+            with open(intro_file, 'r') as infile:
+                content = process_content(infile.read())
+                outfile.write(content + '\n\n')
 
-       index_file = os.path.join(docs_dir, 'index.md')
-       if os.path.exists(index_file):
-           with open(index_file, 'r') as infile:
-               content = replace_footnotes(infile.read())
-               outfile.write(content + '\n\n')
+        # Process index.md if it exists
+        index_file = os.path.join(docs_dir, 'index.md')
+        if os.path.exists(index_file):
+            with open(index_file, 'r') as infile:
+                content = process_content(infile.read())
+                outfile.write(content + '\n\n')
 
-       md_files = []
-       for root, _, files in os.walk(docs_dir):
-           for file in files:
-               if file.endswith('.md') and file != 'index.md':
-                   md_files.append(os.path.join(root, file))
+        # Collect and process all markdown files in docs_dir (except index.md)
+        md_files = []
+        for root, _, files in os.walk(docs_dir):
+            for file in files:
+                if file.endswith('.md') and file != 'index.md':
+                    md_files.append(os.path.join(root, file))
 
-       md_files.sort()
+        md_files.sort()
 
-       for md_file in md_files:
-           with open(md_file, 'r') as infile:
-               content = replace_footnotes(infile.read())
-               outfile.write(content + '\n\n')
+        for md_file in md_files:
+            with open(md_file, 'r') as infile:
+                content = process_content(infile.read())
+                outfile.write(content + '\n\n')
 
 def copy_media_folder(input_dir, docs_dir, output_dir):
     docs_dir = os.path.join(input_dir, docs_dir)
     media_src = os.path.join(docs_dir, 'media')
     media_dst = os.path.join(output_dir, 'media')
-    if os.path.exists(media_src):
-       shutil.copytree(media_src, media_dst, dirs_exist_ok=True)
+
+    if os.path.exists(media_src) and os.path.isdir(media_src):  # Ensure it exists and is a directory
+        shutil.copytree(media_src, media_dst, dirs_exist_ok=True)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

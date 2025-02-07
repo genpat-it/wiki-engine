@@ -17,7 +17,7 @@ Replaces custom footnote references and definitions in the content with a simple
 
 #### `replace_youtube(content)`
 
-Removes the caption text from YouTube links if present, or leaves only the YouTube link if no caption text is present.
+Replaces youtube video macros and replace them with the common Markdown syntax for link.
 
 - **Parameters**: 
   - `content` (str): The content of a Markdown file.
@@ -26,7 +26,7 @@ Removes the caption text from YouTube links if present, or leaves only the YouTu
 
 #### `replace_video(content)`
 
-Removes the caption text from video links if present, or leaves only the video link if no caption text is present.
+Replaces video macros and replace them with the common Markdown syntax for link.
 
 - **Parameters**: 
   - `content` (str): The content of a Markdown file.
@@ -88,5 +88,5 @@ python concat_md_files.py --output-dir /path/to/output --input-dir /path/to/inpu
   * Include intro.md from the templates directory if it exists.
   * Include index.md from the docs directory if it exists.
   * Include all other Markdown files from the docs directory, excluding index.md.
-  * Replace custom macros in the content.
+  * Replace macros in the content.
 4. Copy the media folder from the docs directory to the output directory if it exists.

@@ -36,7 +36,7 @@ if [ "$1" = "build" ]; then
     echo "##############################################"
     echo "########## Cleaning tmp folders... ###########"
     echo "##############################################"
-    # rm -rf /wiki/target/tmp
+    rm -rf /wiki/target/tmp
     rm -rf /wiki/cache
 
     echo -e "\n\n"
