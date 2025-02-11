@@ -164,18 +164,14 @@ Following macros extend markdown basic syntax, just add them inside your `.md` f
 #### File
 
 ```
-{{ video('./media/your-video.mp4') }}
-[your-video.mp4](absolute-path-to-your-video/your-video.mp4)
+{{ video('./media/your-video.mp4', 'caption') }}
 ```
 
 #### Youtube
 
 ```
-{{ youtube('https://www.youtube-nocookie.com/embed/EngW7tLk6R8?rel=0&wmode=transparent&autoplay=0') }}
-[your-video.mp4](https://www.youtube-nocookie.com/embed/EngW7tLk6R8)
+{{ youtube('https://www.youtube-nocookie.com/embed/EngW7tLk6R8?rel=0&wmode=transparent&autoplay=0', 'caption') }}
 ```
-
-> **Tip:** Embedding videos inside PDF or DOCX can be tricky. Adding a normal link after the video offers a fallback. To be improved.
 
 ## Features
 
