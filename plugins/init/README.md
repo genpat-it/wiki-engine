@@ -8,12 +8,12 @@ The `main.py` file collect all macros available to be used inside Mkdocs file (d
 
 Generates HTML code for a button that opens a link in a new window.
 
-#### Args
+#### Args
 
 * `text (str)`: The text to display on the button.
 * `link (str)`: The URL to open when the button is clicked.
 
-#### Returns
+#### Returns
 
 ```html
 <button onclick="window.open(\'{link}\')">{text}</button>
@@ -37,7 +37,7 @@ Generates HTML code for an image with an optional caption.
 * `alt (str)`: The alt text for the image.
 * `caption (str, optional)`: The caption for the image. Defaults to None.
 
-#### Returns
+#### Returns
 
 ```html
 <figure>
@@ -46,7 +46,7 @@ Generates HTML code for an image with an optional caption.
 </figure>
 ```
 
-#### How to use
+#### How to use
 
 To be used inside `.md` files with following syntax: 
 
@@ -58,12 +58,12 @@ To be used inside `.md` files with following syntax:
 
 Generates HTML code to embed a YouTube video.
 
-#### Args
+#### Args
 
 * `src (str)`: The source URL of the YouTube video.
 * `caption (str, optional)`: The caption for the video. Defaults to None.
 
-#### Returns
+#### Returns
 
 ```html
 <div class="embedded-video">
@@ -72,7 +72,7 @@ Generates HTML code to embed a YouTube video.
 </div>
 ```
 
-#### How to use
+#### How to use
 
 To be used inside `.md` files with following syntax: 
 
@@ -86,12 +86,12 @@ The caption text will act as a fallback link to the video.
 
 Generates HTML code to embed a video.
 
-#### Args
+#### Args
 
 * `src (str)`: The source URL of the video.
 * `caption (str, optional)`: The caption for the video. Defaults to None.
 
-#### Returns
+#### Returns
 
 ```html
 <div class="video-container">
@@ -102,7 +102,7 @@ Generates HTML code to embed a video.
 </div>
 ```
 
-#### How to use
+#### How to use
 
 To be used inside `.md` files with following syntax: 
 
@@ -112,21 +112,21 @@ To be used inside `.md` files with following syntax:
 
 The caption text will act as a fallback link to the video.
 
-## def footnote_ref(number)
+## def footnote_ref(number)
 
 Generates HTML code for a footnote reference, linked to a footnote definition.
 
-#### Args
+#### Args
 
 * `number (int)`: The footnote number.
 
-#### Returns
+#### Returns
 
 ```html
 <sup id="ref-{number}"><a href="#footnote-{number}">[{number}]</a></sup>
 ```
 
-#### How to use
+#### How to use
 
 To be used inside `.md` files with following syntax: 
 
@@ -134,21 +134,21 @@ To be used inside `.md` files with following syntax:
 referenced text{{ footnote_ref(2) }}
 ```
 
-## def footnote_def(number)
+## def footnote_def(number)
 
 Generates HTML code for a footnote definition, linked to a footnote reference.
 
-#### Args
+#### Args
 
 * `number (int)`: The footnote number.
 
-#### Returns
+#### Returns
 
 ```html
 <span class="footnote-number" id="footnote-{number}"">[{number}]</span>
 ```
 
-#### How to use
+#### How to use
 
 To be used inside `.md` files with following syntax: 
 
@@ -162,11 +162,11 @@ To be used inside `.md` files with following syntax:
 
 Retrieves the media URL from the environment configuration.
 
-#### Returns
+#### Returns
 
 str: The media URL.
 
-#### How to use
+#### How to use
 
 To be used inside `.md` files with following syntax: 
 
@@ -180,7 +180,7 @@ To be used inside `.md` files with following syntax:
 
 Lists the contents of a given directory.
 
-#### Args
+#### Args
 
 * `directory (str)`: The directory to list the contents of.
 
@@ -194,7 +194,7 @@ Lists the contents of a given directory.
 </div>
 ```
 
-#### How to use
+#### How to use
 
 To be used inside `.md` files with following syntax:
 
@@ -214,7 +214,7 @@ Retrieves the keys of the __dict__ attribute of a page object in MkDocs.
 
 * list: A list of keys from the page object's `__dict__` attribute.
 
-#### How to use
+#### How to use
 
 To be used inside `.md` files with following syntax:
 
