@@ -19,7 +19,7 @@ Generates HTML code for a button that opens a link in a new window.
 <button onclick="window.open(\'{link}\')">{text}</button>
 ```
 
-#### How to use
+#### How to use
 
 To be used inside `.md` files with following syntax: 
 
@@ -31,7 +31,7 @@ To be used inside `.md` files with following syntax:
 
 Generates HTML code for an image with an optional caption.
 
-#### Args
+#### Args
 
 * `src (str)`: The source URL of the image.
 * `alt (str)`: The alt text for the image.
