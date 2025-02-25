@@ -4,6 +4,32 @@
 
 The `main.py` file collect all macros available to be used inside Mkdocs file (docs, themes, configuration). Available macros:
 
+### def drawio_export(drawio_file, alt="drawio diagram", fmt=None)
+
+Convert a .drawio file to an image (SVG/PNG/etc.) via drawio-converter CLI.
+
+#### Args
+
+* `drawio_file (str)`: The path to the .drawio file.
+* `alt (str)`: The alt text for the image. Defaults to "drawio diagram".
+* `fmt (str, optional)`: The format of the output image (e.g., "svg", "png"). Defaults to the value specified in the MkDocs configuration (`extra.drawio_output_format`). If not specified in the configuration, defaults to "svg".
+
+#### Returns
+
+```html
+<img src="{relative_out_path}" class="drawio" alt="{alt}" />
+```
+
+#### How to use
+
+To be used inside `.md` files with the following syntax:
+
+```markdown
+{{ drawio_export("diagram.drawio") }}
+{{ drawio_export("diagram.drawio", "some alt text") }}
+{{ drawio_export("diagram.drawio", "some alt text", "png") }}
+```
+
 ### def button(text, link)
 
 Generates HTML code for a button that opens a link in a new window.

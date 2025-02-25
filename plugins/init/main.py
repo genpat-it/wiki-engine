@@ -1,7 +1,74 @@
-import markdown
 import os
+import markdown
+import shutil
+import subprocess
+from pathlib import Path
 
 def define_env(env):
+
+    @env.macro
+    def drawio_export(drawio_file, alt="drawio diagram", fmt=None):
+        """
+        Convert a .drawio file to an image (SVG/PNG/etc.) via drawio-converter CLI.
+        
+        This macro uses an extra configuration parameter in mkdocs.yml:
+          extra:
+            drawio_output_format: svg
+        or in your PDF config:
+          extra:
+            drawio_output_format: png
+
+        Usage:
+          {{ drawio_export("diagram.drawio") }}
+          {{ drawio_export("diagram.drawio", "some alt text") }}
+          {{ drawio_export("diagram.drawio", "some alt text", "png") }}
+        """
+        if not env.page:
+            return f"Error: No page context for {drawio_file}"
+        
+        # Read default format from mkdocs config, fallback to 'svg' if not found
+        config_default_format = env.conf.get("extra", {}).get("drawio_output_format", "svg")
+
+        # If caller didn't supply a format, use the config default
+        if fmt is None:
+            fmt = config_default_format
+
+        # If neither the config nor the caller supplied a format, use 'svg' as the default
+        if fmt is None:
+            fmt = "svg"
+
+        # Directory of the .md file being processed
+        page_dir = Path(env.page.file.abs_src_path).parent
+
+        # Full path to the .drawio file
+        src_path = page_dir / drawio_file
+        if not src_path.is_file():
+            return f"Error: {drawio_file} not found at {src_path}"
+
+        # Output directory under site_dir relative to the current page
+        output_dir = Path(env.conf['site_dir']) / Path(env.page.url).parent / 'drawio'
+        output_dir.mkdir(parents=True, exist_ok=True)
+        final_out_path = output_dir / (src_path.stem + f".{fmt}")
+
+        # Run drawio-converter
+        try:
+            result = subprocess.run([
+                "drawio-converter",
+                "-x",      # export
+                "-f", fmt, # format
+                "-o", str(final_out_path),
+                str(src_path)
+            ], check=True, capture_output=True, text=True)
+        except subprocess.CalledProcessError as e:
+            return f"Error: Conversion failed for {drawio_file}. {e}"
+
+        # Verify output actually got created
+        if not final_out_path.exists():
+            return f"Error: {final_out_path.name} was not created."
+
+        # Return relative path from the page's directory
+        relative_out_path = final_out_path.relative_to(Path(env.conf['site_dir']) / Path(env.page.url).parent)
+        return f'<img src="{relative_out_path}" class="drawio" alt="{alt}" />'
 
     @env.macro
     def button(text, link):

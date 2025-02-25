@@ -1,19 +1,22 @@
-# Use Python 3.9 as the base image
-FROM python:3.9-slim
+FROM ubuntu:24.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV DRAWIO_VERSION=26.0.9
 
 # Set the working directory
 WORKDIR /app
 
-# Install system dependencies for WeasyPrint
+# Install system dependencies for WeasyPrint and Draw.io
 RUN apt-get update && \
-    apt-get install -y \
+    apt-get install -y --no-install-recommends \
     build-essential \
-    libpango1.0-0 \
+    libpango-1.0-0 \
+    libpangocairo-1.0-0 \
     libcairo2 \
     libgdk-pixbuf2.0-0 \
     libffi-dev \
     shared-mime-info \
-    libjpeg62-turbo \
+    libjpeg-turbo8 \
     libpng-dev \
     libxml2-dev \
     libxslt1-dev \
@@ -27,20 +30,32 @@ RUN apt-get update && \
     plantuml \
     wget \
     unzip \
+    xvfb \
+    dbus \
+    dbus-x11 \
+    libgtk-3-0 \
+    libxtst6 \
+    libnss3 \
+    libasound2t64 \
+    libxss1 \
+    libgbm1 \
+    ca-certificates \
+    libnotify4 \
+    xdg-utils \
+    libsecret-1-0 \
+    graphviz \
     && apt-get clean
 
-# Detect architecture and install the correct version of Pandoc
-RUN apt-get update && apt-get install -y wget && apt-get clean && \
-    wget https://github.com/jgm/pandoc/releases/download/2.5/pandoc-2.5-linux.tar.gz && \
-    tar xvfz pandoc-2.5-linux.tar.gz && \
-    mv pandoc-2.5/bin/pandoc /usr/local/bin/ && \
-    mv pandoc-2.5/bin/pandoc-citeproc /usr/local/bin/ && \
-    rm -rf pandoc-2.5 pandoc-2.5-linux.tar.gz;
+# Install Python and pip
+RUN apt-get update && apt-get install -y python3 python3-pip python3-venv && apt-get clean
 
-# Install MkDocs and the specified plugins and extensions
-RUN pip install --no-cache-dir mkdocs==1.2.4 \
+# Create a virtual environment
+RUN python3 -m venv /venv
+
+# Activate the virtual environment and install dependencies
+RUN /venv/bin/pip install --no-cache-dir mkdocs==1.2.4 \
     mkdocs-izsam-search==0.1.8 \
-    mkdocs-bionformatic-izsam-theme==1.0.4 \
+    mkdocs-bionformatic-izsam-theme==1.0.5 \
     mkdocs-izsam-video==1.0.3 \
     mkdocs-redirects==1.2.0 \
     mkdocs-izsam-mermaid-to-images==1.0.8 \
@@ -52,13 +67,37 @@ RUN pip install --no-cache-dir mkdocs==1.2.4 \
     qrcode==7.3.1 \
     weasyprint==62.3
 
+# Ensure the virtual environment is activated when running commands
+ENV PATH="/venv/bin:$PATH"
+
 # Copy the bin folder (including sh directory) into the Docker image
 COPY . /app
 
-RUN pip install -e /app/plugins/custom
+# Install custom plugins
+RUN /venv/bin/pip install -e /app/plugins/custom
 
 # Set the working directory back to /app
 WORKDIR /app
+
+# Detect architecture and install the correct version of Pandoc
+RUN apt-get update && \
+    apt-get install -y wget && \
+    apt-get clean && \
+    wget https://github.com/jgm/pandoc/releases/download/2.5/pandoc-2.5-linux.tar.gz && \
+    tar xvfz pandoc-2.5-linux.tar.gz && \
+    mv pandoc-2.5/bin/pandoc /usr/local/bin/ && \
+    mv pandoc-2.5/bin/pandoc-citeproc /usr/local/bin/ && \
+    rm -rf pandoc-2.5 pandoc-2.5-linux.tar.gz
+
+# Install draw.io
+RUN wget -q https://github.com/jgraph/drawio-desktop/releases/download/v${DRAWIO_VERSION}/drawio-amd64-${DRAWIO_VERSION}.deb && \
+    dpkg -i drawio-amd64-${DRAWIO_VERSION}.deb || apt-get -f install -y && \
+    rm -f drawio-amd64-${DRAWIO_VERSION}.deb
+
+# Copy draw.io conversion script
+COPY bin/sh/drawio-converter.sh /usr/local/bin/drawio-converter
+# Ensure it is executable
+RUN chmod +x /usr/local/bin/drawio-converter
 
 # Ensure the entrypoint.sh file has the correct permissions to be executed
 RUN chmod +x /app/entrypoint.sh

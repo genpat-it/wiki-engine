@@ -46,3 +46,8 @@ if [ "$1" = "build" ]; then
 else
     exec "$@"
 fi
+
+# Ensure draw.io script is executable
+if [ ! -x /usr/local/bin/drawio-converter ]; then
+    chmod +x /usr/local/bin/drawio-converter
+fi
