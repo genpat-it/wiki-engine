@@ -32,7 +32,7 @@ For Windows users, it is **recommended to use PowerShell** when running Docker c
 ### Use mkdocs
 
 ```bash
-docker run -it --rm -u $(id -u):$(id -g) -v /your_wiki:/wiki wiki-engine mkdocs build -f /wiki/mkdocs.yml --site-dir /wiki/target/mkdocs
+docker run -it --rm -v /your_wiki:/wiki wiki-engine mkdocs build -f /wiki/mkdocs.yml --site-dir /wiki/target/mkdocs
 ```
 
 Your mkdocs output will be available at `/your_wiki/target/mkdocs` folder.
