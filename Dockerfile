@@ -65,7 +65,8 @@ RUN /venv/bin/pip install --no-cache-dir mkdocs==1.2.4 \
     pygments==2.12.0 \
     mkdocs-with-pdf==0.9.3 \
     qrcode==7.3.1 \
-    weasyprint==62.3
+    weasyprint==62.3 \
+    filelock==3.17.0
 
 # Ensure the virtual environment is activated when running commands
 ENV PATH="/venv/bin:$PATH"

@@ -1,8 +1,10 @@
 import os
+import time
 import markdown
 import shutil
 import subprocess
 from pathlib import Path
+from filelock import FileLock
 
 def define_env(env):
 
@@ -50,17 +52,32 @@ def define_env(env):
         output_dir.mkdir(parents=True, exist_ok=True)
         final_out_path = output_dir / (src_path.stem + f".{fmt}")
 
+        # we use filelock to prevent concurrency or resource contention issues when multiple macros run in quick succession serializing calls to Draw.io
+
+        lock_path = "/app/drawio.lock"
+        lock = FileLock(lock_path)
+
         # Run drawio-converter
-        try:
-            result = subprocess.run([
-                "drawio-converter",
-                "-x",      # export
-                "-f", fmt, # format
-                "-o", str(final_out_path),
-                str(src_path)
-            ], check=True, capture_output=True, text=True)
-        except subprocess.CalledProcessError as e:
-            return f"Error: Conversion failed for {drawio_file}. {e}"
+        with lock:
+            try:
+                result = subprocess.run([
+                    "drawio-converter",
+                    "-x",      # export
+                    "-f", fmt, # format
+                    "-o", str(final_out_path),
+                    str(src_path)
+                ], capture_output=True, text=True)
+
+                # Verify return code
+                if result.returncode != 0:
+                    return (f"Error: Conversion failed for {drawio_file}. "
+                            f"Return code: {result.returncode} - See logs above.")
+
+                # Short fixed wait to allow operations to complete
+                time.sleep(1)
+
+            except subprocess.CalledProcessError as e:
+                return f"Error: Conversion failed for {drawio_file}. {e}"
 
         # Verify output actually got created
         if not final_out_path.exists():
