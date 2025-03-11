@@ -14,17 +14,32 @@ def define_env(env):
         Convert a .drawio file to an image (SVG/PNG/etc.) via drawio-converter CLI.
         
         This macro uses an extra configuration parameter in mkdocs.yml:
-          extra:
+        extra:
             drawio_output_format: svg
         or in your PDF config:
-          extra:
+        extra:
             drawio_output_format: png
 
         Usage:
-          {{ drawio_export("diagram.drawio") }}
-          {{ drawio_export("diagram.drawio", "some alt text") }}
-          {{ drawio_export("diagram.drawio", "some alt text", "png") }}
+        {{ drawio_export("diagram.drawio") }}
+        {{ drawio_export("diagram.drawio", "some alt text") }}
+        {{ drawio_export("diagram.drawio", "some alt text", "png") }}
         """
+
+        def wait_for_file(file_path, timeout=10, check_interval=0.2):
+            """Waits for the file to be created and its size to stabilize within a specified timeout."""
+            start_time = time.time()
+            last_size = -1
+            while time.time() - start_time < timeout:
+                if file_path.exists():
+                    current_size = file_path.stat().st_size
+                    if current_size == last_size:
+                        # File size has stabilized
+                        return True
+                    last_size = current_size
+                time.sleep(check_interval)
+            return False
+
         if not env.page:
             return f"Error: No page context for {drawio_file}"
         
@@ -53,7 +68,6 @@ def define_env(env):
         final_out_path = output_dir / (src_path.stem + f".{fmt}")
 
         # we use filelock to prevent concurrency or resource contention issues when multiple macros run in quick succession serializing calls to Draw.io
-
         lock_path = "/app/drawio.lock"
         lock = FileLock(lock_path)
 
@@ -72,9 +86,10 @@ def define_env(env):
                 if result.returncode != 0:
                     return (f"Error: Conversion failed for {drawio_file}. "
                             f"Return code: {result.returncode} - See logs above.")
-
-                # Short fixed wait to allow operations to complete
-                time.sleep(1)
+                
+                # Attendi che il file venga creato con un timeout
+                if not wait_for_file(final_out_path, timeout=10):
+                    return f"Error: Timeout waiting for {final_out_path.name} to be created."
 
             except subprocess.CalledProcessError as e:
                 return f"Error: Conversion failed for {drawio_file}. {e}"
