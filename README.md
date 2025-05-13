@@ -41,15 +41,26 @@ Your mkdocs output will be available at `/your_wiki/target/mkdocs` folder.
 
 Run:
 ```bash
-docker run -it --rm -u $(id -u):$(id -g) -v /your_wiki:/wiki wiki-engine build
+docker run -it --rm -u $(id -u):$(id -g) -v /your_wiki:/wiki wiki-engine build-docx
 ```
 
 Your output will be available at `/your_wiki/target/docx` and  `/your_wiki/target/html` folders.
 
-If you want to indicate a specific folder, please add the `--docs-dir` parameter:
+If you want to use a template:
 
+Run:
 ```bash
-docker run -it --rm -u $(id -u):$(id -g) -v /your_wiki:/wiki wiki-engine build --docs-dir path/to/dir
+#
+# the template must be accessible to the docker image
+#
+docker run -it --rm -u $(id -u):$(id -g) -v /your_wiki:/wiki wiki-engine build-docx --template /template/path/accessible/from/docker/image
+```
+
+### Build EFSA compatible docx
+
+Run:
+```bash
+docker run -it --rm -u $(id -u):$(id -g) -v /your_wiki:/wiki wiki-engine build-docx --efsa 
 ```
 
 ## Directory Structure of your wiki
