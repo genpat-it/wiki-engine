@@ -1,9 +1,9 @@
 #!/bin/bash
 
 if [ "$1" = "build-docx" ]; then
-	echo "perl entrypoint.pl "
+	echo "perl /app/entrypoint.pl "
 	echo "$@"
-	perl entrypoint.pl "$@"
+	perl /app/entrypoint.pl "$@"
 else
     exec "$@"
 fi

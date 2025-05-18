@@ -32,9 +32,7 @@ if($efsa && !( $usetemplate)){
 		print "#  ERROR - template is not a file: '$template'";
 		exit(1);
 	}
-	exit(1);
 }
-#
 #--------------------------------------------------
 #  MAIN
 #--------------------------------------------------
