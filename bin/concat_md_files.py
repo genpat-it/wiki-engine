@@ -4,8 +4,10 @@ import shutil
 import argparse
 
 def replace_footnotes(content):
-    content = re.sub(r'\{\{\s*footnote_ref\((\d+)\)\s*\}\}', r'[\1]', content)
-    content = re.sub(r'\{\{\s*footnote_def\((\d+)\)\s*\}\}', r'[\1]', content)
+    # Replace footnote references with Pandoc-style references
+    content = re.sub(r'\{\{\s*footnote_ref\((\d+)\)\s*\}\}', r'[^\1]', content)
+    # Replace footnote definitions with Pandoc-style definitions (you may need to append the actual text after the colon)
+    content = re.sub(r'\{\{\s*footnote_def\((\d+)\)\s*\}\}', r'[^\1]:', content)
     return content
 
 def replace_youtube(content):
@@ -88,15 +90,28 @@ def copy_media_folder(input_dir, docs_dir, output_dir):
     if os.path.exists(media_src) and os.path.isdir(media_src):  # Ensure it exists and is a directory
         shutil.copytree(media_src, media_dst, dirs_exist_ok=True)
 
+def copy_media_to_docx_folder(tmp_output_dir, docx_output_dir):
+    media_src = os.path.join(tmp_output_dir, 'media')
+    media_dst = os.path.join(docx_output_dir, 'media')
+    if os.path.exists(media_src) and os.path.isdir(media_src):
+        shutil.copytree(media_src, media_dst, dirs_exist_ok=True)
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--output-dir', default='/wiki/target/tmp', help='Output directory')
     parser.add_argument('--input-dir', default='/wiki', help='Input directory')
     parser.add_argument('--docs-dir', default='docs', help='Docs directory')
+    parser.add_argument('--docx-dir', default='/wiki/target/docx', help='Docx output directory')
     args = parser.parse_args()
     
     os.makedirs(args.output_dir, exist_ok=True)
     output_file = os.path.join(args.output_dir, 'all_docs.md')
     
     concatenate_md_files(args.input_dir, args.docs_dir, output_file)
+    # Save a debug copy in /wiki/target/md/all_docs.md
+    debug_md_dir = '/wiki/target/md'
+    os.makedirs(debug_md_dir, exist_ok=True)
+    debug_md_file = os.path.join(debug_md_dir, 'all_docs.md')
+    shutil.copy2(output_file, debug_md_file)
     copy_media_folder(args.input_dir, args.docs_dir, args.output_dir)
+    copy_media_to_docx_folder(args.output_dir, args.docx_dir)
