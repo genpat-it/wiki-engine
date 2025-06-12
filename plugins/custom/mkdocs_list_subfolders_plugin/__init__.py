@@ -5,7 +5,7 @@ from mkdocs.config import config_options
 class ListSubfoldersPlugin(BasePlugin):
     # Define the configuration scheme for the plugin
     config_scheme = (
-        ('folder_path', config_options.Type(str, default='docs')),
+        ('folder_path', config_options.Type(str, default='journal')),
     )
 
     def on_config(self, config):
@@ -14,7 +14,7 @@ class ListSubfoldersPlugin(BasePlugin):
         It adds the list of subfolder paths to the MkDocs configuration.
         """
         # Construct the full path to the target folder
-        folder_path = os.path.join('docs', self.config['folder_path'])
+        folder_path = os.path.join(config['docs_dir'], self.config['folder_path'])
         
         # Get the list of subfolder paths
         subfolder_paths = self.get_subfolder_paths(folder_path)
@@ -36,7 +36,7 @@ class ListSubfoldersPlugin(BasePlugin):
         for root, dirs, files in os.walk(folder_path):
             for dir in dirs:
                 # Append the relative path based on the given folder in the configuration
-                relative_path = os.path.relpath(os.path.join(root, dir), 'docs')
+                relative_path = os.path.join(root, dir)
                 subfolder_paths.append(relative_path)
             break  # Only get the first level of subfolders
         return subfolder_paths
