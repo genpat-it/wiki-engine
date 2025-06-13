@@ -5,26 +5,24 @@ from mkdocs.config import config_options
 class ListSubfoldersPlugin(BasePlugin):
     # Define the configuration scheme for the plugin
     config_scheme = (
-        ('folder_path', config_options.Type(str, default='journal')),
+        ('folder_paths', config_options.Type((str, list), default='journal')),
     )
 
     def on_config(self, config):
-        """
-        This method is called when the MkDocs configuration is loaded.
-        It adds the list of subfolder paths to the MkDocs configuration.
-        """
-        # Construct the full path to the target folder
-        folder_path = os.path.join(config['docs_dir'], self.config['folder_path'])
-        
-        # Get the list of subfolder paths
-        subfolder_paths = self.get_subfolder_paths(folder_path)
-        
-        # Ensure 'extra' exists in the config
+        # Accept either a string or a list for folder_paths
+        folder_paths = self.config.get('folder_paths', 'journal')
+        if isinstance(folder_paths, str):
+            folder_paths = [folder_paths]
+
+        all_subfolder_paths = []
+        for folder in folder_paths:
+            folder_path = os.path.join(config['docs_dir'], folder)
+            subfolder_paths = self.get_subfolder_paths(folder_path)
+            all_subfolder_paths.extend(subfolder_paths)
+
         if 'extra' not in config:
             config['extra'] = {}
-        
-        # Add the subfolder paths to the 'extra' section of the config
-        config['extra']['subfolder_paths'] = subfolder_paths
+        config['extra']['subfolder_paths'] = all_subfolder_paths
         return config
 
     def get_subfolder_paths(self, folder_path):
