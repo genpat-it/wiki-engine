@@ -58,6 +58,7 @@ RUN /venv/bin/pip install --no-cache-dir mkdocs==1.2.4 \
     mkdocs-bionformatic-izsam-theme==1.0.10 \
     mkdocs-izsam-video==1.0.3 \
     mkdocs-redirects==1.2.0 \
+    mkdocs-exclude==1.0.2 \
     mkdocs-izsam-mermaid-to-images==1.0.8 \
     mkdocs-macros-plugin==1.3.7 \
     plantuml-markdown==3.5.2 \

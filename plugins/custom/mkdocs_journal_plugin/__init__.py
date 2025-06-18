@@ -1,10 +1,11 @@
 import os
 import yaml
-from datetime import datetime
+from datetime import datetime, date
 from mkdocs.plugins import BasePlugin
 from mkdocs.structure.files import File
 from mkdocs.structure.pages import Page
 from mkdocs.config import config_options
+import requests
 
 # Define a custom MkDocs plugin class
 class JournalPlugin(BasePlugin):
@@ -18,6 +19,16 @@ class JournalPlugin(BasePlugin):
         journal_files = []
         directories = self.config['directory']
         base_url = config.get('site_url', '').rstrip('/')
+        build_date = datetime.now().isoformat()  # Build/check date
+
+        def is_url_valid(url):
+            try:
+                response = requests.head(url, allow_redirects=True, timeout=5)
+                if response.status_code == 405:  # Method Not Allowed, try GET
+                    response = requests.get(url, allow_redirects=True, timeout=5)
+                return response.status_code == 200
+            except Exception:
+                return False
 
         for file in files:
             for dir_name, dir_opts in directories.items():
@@ -27,15 +38,41 @@ class JournalPlugin(BasePlugin):
                         content = f.read()
                         metadata, _ = self._split_front_matter(content)
                         if metadata:
-                            if 'date' in metadata and isinstance(metadata['date'], str):
-                                metadata['date'] = datetime.strptime(metadata['date'], '%Y-%m-%d').date()
+                            # Convert all date/datetime fields in metadata to isoformat strings
+                            for key, value in metadata.items():
+                                if isinstance(value, (datetime, date)):
+                                    metadata[key] = value.isoformat()
+
+                            # Handle additional_metadata
+                            additional_metadata = metadata.get('additional_metadata', {})
+                            if isinstance(additional_metadata, dict):
+                                link = additional_metadata.get('link')
+                                if link:
+                                    additional_metadata['link_valid'] = is_url_valid(link)
+                                    additional_metadata['link_checked_at'] = build_date
+
+                            # Fallback: use file creation date if no date in metadata
+                            if 'date' in metadata and metadata['date']:
+                                date_value = metadata['date']
+                            else:
+                                stat = os.stat(file.abs_src_path)
+                                if hasattr(stat, 'st_birthtime'):
+                                    creation_time = stat.st_birthtime
+                                else:
+                                    creation_time = stat.st_ctime
+                                date_value = datetime.fromtimestamp(creation_time).date().isoformat()
+
                             journal_file = {
                                 'src_path': file.src_path,
                                 'base_url': base_url,
                                 'context_path': os.path.dirname(file.src_path),
                                 'title': metadata.get('title', 'Untitled'),
-                                'date': metadata.get('date', datetime.min.date()).isoformat(),
+                                'date': date_value,
+                                'description': metadata.get('description', None),
+                                'terms': metadata.get('terms', []),
                                 'thumbnail': metadata.get('thumbnail', None),
+                                'category': metadata.get('category', None),
+                                'additional_metadata': additional_metadata,
                                 'page_number': None,
                                 'directory': dir_name,
                                 'items_per_page': dir_opts.get('items_per_page', 5)
