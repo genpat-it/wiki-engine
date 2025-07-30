@@ -26,6 +26,8 @@ RUN apt-get update && \
     libfribidi-dev \
     libglib2.0-0 \
     libmagic1 \
+    fontconfig \
+    fonts-dejavu \
     openjdk-17-jre-headless \
     plantuml \
     wget \
@@ -105,7 +107,19 @@ RUN chmod +x /usr/local/bin/drawio-converter
 RUN chmod +x /app/entrypoint.sh
 
 # Create the fonts and cache directories
-RUN echo '<?xml version="1.0"?><!DOCTYPE fontconfig SYSTEM "fonts.dtd"><fontconfig><dir recursive="yes">/wiki/fonts</dir><cachedir>/wiki/cache</cachedir></fontconfig>' > /etc/fonts/fonts.conf
+RUN echo '<?xml version="1.0"?><!DOCTYPE fontconfig SYSTEM "fonts.dtd"><fontconfig><dir>/wiki/fonts</dir><cachedir>/wiki/cache</cachedir></fontconfig>' > /etc/fonts/fonts.conf
+
+# Solve the issue with the use of custom theme packages with mkdocs-with-pdf
+RUN mkdir -p /venv/lib/python3.12/site-packages/mkdocs_with_pdf/themes
+RUN cp -r /venv/lib/python3.12/site-packages/bioinformatic_izsam_theme /venv/lib/python3.12/site-packages/mkdocs_with_pdf/themes/bioinformatic_izsam_theme
+RUN echo "\
+import re\n\
+def inject_link(output_content, pdf_path):\n\
+    return output_content\n\
+\n\
+def get_stylesheet(debug_html):\n\
+    return \"\"\n\
+" >> /venv/lib/python3.12/site-packages/mkdocs_with_pdf/themes/bioinformatic_izsam_theme/__init__.py
 
 # Set execute permissions only for .sh and .pl files
 RUN find /app/bin -type f \( -name "*.sh" \) -exec chmod +x {} \;
