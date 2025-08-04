@@ -1,6 +1,7 @@
 #!/bin/perl
 
 my $default_template="/wiki/templates/template.docx";
+my $default_docs_folder="docs";  # Default relative path
 #
 #--------------------------------------------------
 #  PARAMETERS CHECK
@@ -9,6 +10,8 @@ my $default_template="/wiki/templates/template.docx";
 my $template="";
 my $usetemplate=0;
 my $efsa=0;
+my $docs_folder=$default_docs_folder;
+
 for(my $i=0; $i<@ARGV; $i++) {
 	if($ARGV[$i] =~ /--efsa/i) {
 		$efsa=1;
@@ -19,11 +22,25 @@ for(my $i=0; $i<@ARGV; $i++) {
 						$ARGV[$i+1]:
 						$default_template;
 		if( -e $template ){
-			print "#  Using template: $template";
+			print "#  Using template: $template\n";
 		}else{
-			print "#  ERROR - template is not a file: '$template'";
+			print "#  ERROR - template is not a file: '$template'\n";
 			exit(1);
 		}
+		$i++; # Skip next argument as it's the template path
+	}
+	if($ARGV[$i] =~ /--docs-dir/i) {
+			$docs_folder=($i+1 < @ARGV)? 
+											$ARGV[$i+1]:
+											$default_docs_folder;
+			my $full_docs_path = "/wiki/$docs_folder";
+			if( -d $full_docs_path ){
+					print "#  Using docs folder: $docs_folder\n";
+			}else{
+					print "#  ERROR - docs folder does not exist: '$full_docs_path'\n";
+					exit(1);
+			}
+			$i++; # Skip next argument as it's the docs path
 	}
 }
 if($efsa && !( $usetemplate)){
@@ -50,8 +67,8 @@ print "#  Loading fonts... ";
 command("mkdir -p /wiki/cache");
 command("HOME=/wiki/cache fc-cache -fv");
 # concat
-print "# Running concat_md_files.py: concatenate all the md files";
-command("python /app/bin/concat_md_files.py");
+print "# Running concat_md_files.py: concatenate all the md files\n";
+command("python /app/bin/concat_md_files.py --docs-dir $docs_folder");
 #
 print "#	PANDOC MARKDOWN to DOCX    #";
 #
@@ -61,7 +78,7 @@ if($efsa){
 	# EFSA case: manipulate the md file to be compatible with EFSA template
 	# 
 	};
-	command("perl /app/bin/md2html2docx_ref.pl /wiki/target/tmp/all_docs.md $template");
+	command("cd /wiki/target/tmp && perl /app/bin/md2html2docx_ref.pl all_docs.md $template");
 }else{
 	print qq{
 	#
@@ -69,14 +86,14 @@ if($efsa){
 	# 
 	};
 	$template=($usetemplate)? " --reference-doc $template":"";
-	command("pandoc /wiki/target/tmp/all_docs.md -f markdown -t docx $template > /tmp/out.docx");
+	command("cd /wiki/target/tmp && pandoc all_docs.md -f markdown -t docx $template > /tmp/out.docx");
 }
 command("mv /tmp/out.docx /wiki/target/docx/out.docx");
 #html
-print "# Generating HTML version with pandoc ";
+print "# Generating HTML version with pandoc\n";
 command("pandoc -s /wiki/target/tmp/all_docs.md -o /wiki/target/html/out.html");
 #cleaning
-print "#  Cleaning tmp folders...";
+print "#  Cleaning tmp folders...\n";
 command("rm -rf /wiki/target/tmp /wiki/cache");
 
 print qq{

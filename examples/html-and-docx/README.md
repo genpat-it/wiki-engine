@@ -52,7 +52,7 @@ The `docs` folder contains the `.md` files necessary for building both the docx 
 
 In this specific use case, an explicit navigation menu is not used, so the order of presentation of the topics is given by the name of the `.md` files (ascending alphabetical order). In any case, the `wiki-engine` to build the docx, recursively scans the folder concatenating the files it finds inside according to the name order.
 
-> **Important** The `wiki-engine` expects all images to be placed inside the `media` folder.
+> **Please note** if a `media` folder exists, the `wiki-engine` will copy it as is. If not, the `wiki-engine` will parse the `docs` folder to collect video and image resources and make them available to build docx
 
 ### fonts
 

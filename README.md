@@ -46,6 +46,12 @@ docker run -it --rm -u $(id -u):$(id -g) -v /your_wiki:/wiki wiki-engine build-d
 
 Your output will be available at `/your_wiki/target/docx` and  `/your_wiki/target/html` folders.
 
+If you want to specify a different docs directory:
+
+```bash
+docker run -it --rm -u $(id -u):$(id -g) -v /your_wiki:/wiki wiki-engine build-docx --docs-dir /path/accessible/from/docker/image/docs
+```
+
 If you want to use a template:
 
 Run:
