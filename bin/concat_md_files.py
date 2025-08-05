@@ -43,31 +43,33 @@ def replace_macros(content):
     content = re.sub(r"\{\{\s*\w+\([^\)]*\)\s*\}\}", '', content)
     return content
 
-def replace_relative_media_links(content, md_file_path, docs_dir):
-    allowed_exts = ('.mp4', '.png', '.jpg', '.jpeg', '.svg')
+def replace_relative_res_links(content, md_file_path, docs_dir):
+    # Allow all extensions except .md
+    def is_allowed_ext(path):
+        ext = os.path.splitext(path)[1].lower()
+        return ext != '.md'
+
     folder = os.path.relpath(os.path.dirname(md_file_path), docs_dir)
 
-    # Replace [alt](relative_path.ext) for allowed extensions
     def link_repl(match):
         alt_text = match.group(1)
         rel_path = match.group(2)
-        if rel_path.startswith(('http://', 'https://', 'files/')):
+        if rel_path.startswith(('http://', 'https://', 'res/', '.res/')):
             return match.group(0)
-        if not rel_path.lower().endswith(allowed_exts):
+        if not is_allowed_ext(rel_path):
             return match.group(0)
         rel_path_clean = rel_path[2:] if rel_path.startswith('./') else rel_path
-        new_path = f'./files/{folder}/{rel_path_clean}' if folder != '.' else f'./files/{rel_path_clean}'
+        new_path = f'./res/{folder}/{rel_path_clean}' if folder != '.' else f'./res/{rel_path_clean}'
         return f'[{alt_text}]({new_path})'
 
-    # Replace ![](relative_path.ext) for allowed extensions
     def img_repl(match):
         rel_path = match.group(1)
-        if rel_path.startswith(('http://', 'https://', 'files/')):
+        if rel_path.startswith(('http://', 'https://', 'res/', '.res/')):
             return match.group(0)
-        if not rel_path.lower().endswith(allowed_exts):
+        if not is_allowed_ext(rel_path):
             return match.group(0)
         rel_path_clean = rel_path[2:] if rel_path.startswith('./') else rel_path
-        new_path = f'./files/{folder}/{rel_path_clean}' if folder != '.' else f'./files/{rel_path_clean}'
+        new_path = f'./res/{folder}/{rel_path_clean}' if folder != '.' else f'./res/{rel_path_clean}'
         return f'![]({new_path})'
 
     # [alt](relative_path.ext)
@@ -85,7 +87,7 @@ def process_content(content, md_file_path=None, docs_dir=None, skip_media_links=
     content = replace_list_contents(content)
     content = replace_macros(content)  # Ensure this runs last
     if md_file_path and docs_dir and not skip_media_links:
-        content = replace_relative_media_links(content, md_file_path, docs_dir)
+        content = replace_relative_res_links(content, md_file_path, docs_dir)
     return content
 
 def copy_non_md_files(input_dir, docs_dir, target_files_dir):
@@ -159,7 +161,12 @@ if __name__ == "__main__":
 
     # Only copy non-md files if media folder is NOT present
     if not has_media_folder(args.input_dir, args.docs_dir):
-        for target_dir in ['/wiki/target/tmp/files', '/wiki/target/docx/files', '/wiki/target/html/files', '/wiki/target/md/files']:
+        for target_dir in [
+            '/wiki/target/tmp/res',
+            '/wiki/target/docx/res',
+            '/wiki/target/html/res',
+            '/wiki/target/md/res'
+        ]:
             os.makedirs(target_dir, exist_ok=True)
             copy_non_md_files(args.input_dir, args.docs_dir, target_dir)
 
