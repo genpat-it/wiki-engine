@@ -46,19 +46,32 @@ docker run -it --rm -u $(id -u):$(id -g) -v /your_wiki:/wiki wiki-engine build-d
 
 Your output will be available at `/your_wiki/target/docx` and  `/your_wiki/target/html` folders.
 
-If you want to specify a different docs directory:
+#### Advanced Usage
+
+##### Specify a Custom Docs Directory
+
+To use a different directory for your markdown files (instead of the default `docs`), add the `--docs-dir` option:
 
 ```bash
 docker run -it --rm -u $(id -u):$(id -g) -v /your_wiki:/wiki wiki-engine build-docx --docs-dir /path/accessible/from/docker/image/docs
 ```
 
-If you want to use a template:
+##### Set a Custom Index File
 
-Run:
+To use a specific file as your index (instead of the default `index.md`), use the `--index-file` option:
+
 ```bash
-#
-# the template must be accessible to the docker image
-#
+docker run -it --rm -u $(id -u):$(id -g) -v /your_wiki:/wiki wiki-engine build-docx --index-file home.md
+```
+
+> **Note:** The index file must be located at the root of the specified docs directory.
+
+##### Use a Custom Word Template
+
+To apply a custom Word template, provide the template path with the `--template` option:
+
+```bash
+# The template file must be accessible from within the Docker image
 docker run -it --rm -u $(id -u):$(id -g) -v /your_wiki:/wiki wiki-engine build-docx --template /template/path/accessible/from/docker/image
 ```
 

@@ -2,6 +2,7 @@
 
 my $default_template="/wiki/templates/template.docx";
 my $default_docs_folder="docs";  # Default relative path
+my $default_index_file="index.md";  # Default index file
 #
 #--------------------------------------------------
 #  PARAMETERS CHECK
@@ -11,6 +12,7 @@ my $template="";
 my $usetemplate=0;
 my $efsa=0;
 my $docs_folder=$default_docs_folder;
+my $index_file=$default_index_file;
 
 for(my $i=0; $i<@ARGV; $i++) {
 	if($ARGV[$i] =~ /--efsa/i) {
@@ -42,11 +44,24 @@ for(my $i=0; $i<@ARGV; $i++) {
 			}
 			$i++; # Skip next argument as it's the docs path
 	}
+	if($ARGV[$i] =~ /--index-file/i) {
+			$index_file=($i+1 < @ARGV)? 
+											$ARGV[$i+1]:
+											$default_index_file;
+			my $full_index_path = "/wiki/$docs_folder/$index_file";
+			if( -f $full_index_path ){
+					print "#  Using index file: $index_file\n";
+			}else{
+					print "#  ERROR - index file does not exist: '$full_index_path'\n";
+					exit(1);
+			}
+			$i++; # Skip next argument as it's the index file path
+	}
 }
 if($efsa && !( $usetemplate)){
 	$template=$default_template;
 	if(! -e $template ){
-		print "#  ERROR - template is not a file: '$template'";
+		print "#  ERROR - template is not a file: '$template'\n";
 		exit(1);
 	}
 }
@@ -61,16 +76,16 @@ print qq{
 #--------------------------------------------------
 };
 # Create font cache
-print "#  tmp dirs in /wiki/target/  ";
+print "#  tmp dirs in /wiki/target/\n";
 command("mkdir -p /wiki/target/tmp /wiki/target/docx /wiki/target/html ");
-print "#  Loading fonts... ";
+print "#  Loading fonts...\n";
 command("mkdir -p /wiki/cache");
 command("HOME=/wiki/cache fc-cache -fv");
 # concat
 print "# Running concat_md_files.py: concatenate all the md files\n";
-command("python /app/bin/concat_md_files.py --docs-dir $docs_folder");
+command("python /app/bin/concat_md_files.py --docs-dir $docs_folder --index-file $index_file");
 #
-print "#	PANDOC MARKDOWN to DOCX    #";
+print "#	PANDOC MARKDOWN to DOCX\n";
 #
 if($efsa){
 	print qq{

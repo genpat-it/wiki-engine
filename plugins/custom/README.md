@@ -104,7 +104,7 @@ The subcategories list are made available as a `config.subfolder_paths` paramete
 
 ## Set Home page Plugin (mkdocs_set_home_page_plugin)
 
-The `SetHomePagePlugin` is a custom MkDocs plugin that allows you to set a custom home page for your documentation by creating a symbolic link to the specified home page file.
+The `SetHomePagePlugin` is a custom MkDocs plugin that allows you to set a custom home page for your documentation by creating a copy to the specified home page file.
 
 ### Configuration
 
@@ -120,11 +120,11 @@ extra:
 
 #### Options
 
-* `home_page`: : The path to the Markdown file that you want to set as the home page. This path should be relative to the `docs_dir`.
+* `home_page`: The path to the Markdown file that you want to set as the home page. This path should be relative to the `docs_dir`.
 
 ### Usage
 
-When the `home_page` option is specified, the plugin will create a symbolic link named `index.md` in the `docs_dir` that points to the specified home page file. If an `index.md` file already exists, it will be removed before creating the symbolic link.
+When the `home_page` option is specified, the plugin copies the designated Markdown file and renames it to `index.md` in the `docs_dir`. If an `index.md` file already exists, it will be deleted before the new one is created. The generated `index.md` will be automatically removed at the end of the build process.
 
 #### Example configuration
 

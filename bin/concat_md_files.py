@@ -103,7 +103,7 @@ def copy_non_md_files(input_dir, docs_dir, target_files_dir):
                 shutil.copy2(src_file, dst_file)
 
 # In concatenate_md_files, pass md_file_path and docs_dir to process_content:
-def concatenate_md_files(input_dir, docs_dir, output_file):
+def concatenate_md_files(input_dir, docs_dir, output_file, index_file='index.md'):
     docs_dir_full = os.path.join(input_dir, docs_dir)
     templates_dir = os.path.join(input_dir, 'templates')
     skip_media_links = has_media_folder(input_dir, docs_dir)
@@ -115,16 +115,16 @@ def concatenate_md_files(input_dir, docs_dir, output_file):
                 content = process_content(infile.read(), intro_file, docs_dir_full, skip_media_links)
                 outfile.write(content + '\n\n')
 
-        index_file = os.path.join(docs_dir_full, 'index.md')
-        if os.path.exists(index_file):
-            with open(index_file, 'r') as infile:
-                content = process_content(infile.read(), index_file, docs_dir_full, skip_media_links)
+        index_file_path = os.path.join(docs_dir_full, index_file)
+        if os.path.exists(index_file_path):
+            with open(index_file_path, 'r') as infile:
+                content = process_content(infile.read(), index_file_path, docs_dir_full, skip_media_links)
                 outfile.write(content + '\n\n')
 
         md_files = []
         for root, _, files in os.walk(docs_dir_full):
             for file in files:
-                if file.endswith('.md') and file != 'index.md':
+                if file.endswith('.md') and file != index_file:
                     md_files.append(os.path.join(root, file))
 
         md_files.sort()
@@ -153,6 +153,7 @@ if __name__ == "__main__":
     parser.add_argument('--output-dir', default='/wiki/target/tmp', help='Output directory')
     parser.add_argument('--input-dir', default='/wiki', help='Input directory')
     parser.add_argument('--docs-dir', default='docs', help='Docs directory')
+    parser.add_argument('--index-file', default='index.md', help='Index file name')
     parser.add_argument('--docx-dir', default='/wiki/target/docx', help='Docx output directory')
     args = parser.parse_args()
     
@@ -181,7 +182,7 @@ if __name__ == "__main__":
             os.makedirs(os.path.dirname(target_dir), exist_ok=True)
             shutil.copytree(media_src, target_dir, dirs_exist_ok=True)
 
-    concatenate_md_files(args.input_dir, args.docs_dir, output_file)
+    concatenate_md_files(args.input_dir, args.docs_dir, output_file, args.index_file)
     # Save a debug copy in /wiki/target/md/all_docs.md
     debug_md_dir = '/wiki/target/md'
     os.makedirs(debug_md_dir, exist_ok=True)
