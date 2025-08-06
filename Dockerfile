@@ -93,6 +93,10 @@ RUN apt-get update && \
     mv pandoc-2.5/bin/pandoc-citeproc /usr/local/bin/ && \
     rm -rf pandoc-2.5 pandoc-2.5-linux.tar.gz
 
+# Install pandoc-plantuml filter
+RUN /venv/bin/pip install pandoc-plantuml-filter && \
+    ln -s /venv/bin/pandoc-plantuml /usr/local/bin/pandoc-plantuml
+
 # Install draw.io
 RUN wget -q https://github.com/jgraph/drawio-desktop/releases/download/v${DRAWIO_VERSION}/drawio-amd64-${DRAWIO_VERSION}.deb && \
     dpkg -i drawio-amd64-${DRAWIO_VERSION}.deb || apt-get -f install -y && \

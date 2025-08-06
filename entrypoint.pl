@@ -101,12 +101,14 @@ if($efsa){
 	# 
 	};
 	$template=($usetemplate)? " --reference-doc $template":"";
-	command("cd /wiki/target/tmp && pandoc all_docs.md -f markdown -t docx $template > /tmp/out.docx");
+	command("cd /wiki/target/tmp && pandoc all_docs.md -f markdown -t docx --filter pandoc-plantuml $template -o /tmp/out.docx");
 }
 command("mv /tmp/out.docx /wiki/target/docx/out.docx");
 #html
 print "# Generating HTML version with pandoc\n";
-command("pandoc -s /wiki/target/tmp/all_docs.md -o /wiki/target/html/out.html");
+command("mkdir -p /wiki/target/html/plantuml-images");
+command("cp -r /wiki/target/tmp/plantuml-images /wiki/target/html/ 2>/dev/null || true");
+command("cd /wiki/target/html && pandoc -s ../tmp/all_docs.md --filter pandoc-plantuml -o out.html");
 #cleaning
 print "#  Cleaning tmp folders...\n";
 command("rm -rf /wiki/target/tmp /wiki/cache");

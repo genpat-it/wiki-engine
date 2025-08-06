@@ -43,6 +43,21 @@ def replace_macros(content):
     content = re.sub(r"\{\{\s*\w+\([^\)]*\)\s*\}\}", '', content)
     return content
 
+def replace_uml_blocks(text):
+    """
+    Replace ::uml:: blocks (with optional attributes) with ```plantuml code fences.
+    """
+    pattern = re.compile(
+        r"::uml::[^\n]*\n(.*?)(?=::end-uml::)", re.DOTALL
+    )
+    def repl(match):
+        uml_code = match.group(1).rstrip()
+        return f"```plantuml\n{uml_code}\n```"
+    # Replace and remove ::end-uml::
+    text = pattern.sub(repl, text)
+    text = re.sub(r"::end-uml::", "", text)
+    return text
+
 def replace_relative_res_links(content, md_file_path, docs_dir):
     # Allow all extensions except .md
     def is_allowed_ext(path):
@@ -85,7 +100,8 @@ def process_content(content, md_file_path=None, docs_dir=None, skip_media_links=
     content = replace_image(content)
     content = replace_button(content)
     content = replace_list_contents(content)
-    content = replace_macros(content)  # Ensure this runs last
+    content = replace_macros(content)
+    content = replace_uml_blocks(content)
     if md_file_path and docs_dir and not skip_media_links:
         content = replace_relative_res_links(content, md_file_path, docs_dir)
     return content
