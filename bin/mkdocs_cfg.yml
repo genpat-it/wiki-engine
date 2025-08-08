@@ -1,0 +1,61 @@
+docs_dir: docs
+site_name: Wiki
+site_url: https://genpat.izs.it/wiki/en/
+site_description: Documentation
+extra:
+    platform: genpat
+    media_url: "https://genpat.izs.it/wiki/media"
+    drawio_output_format: svg
+    platform_title: GenPat Platform, Wiki
+    language: en
+    useful_links:
+        link_1:
+            label: NRC Genome Sequencing
+            url: https://www.izs.it/IZS/Eccellenza/Centri_nazionali/CRN_-_Sequenze_Genomiche
+        link_2:
+            label: IZSAM "G. Caporale"
+            url: https://www.izs.it
+    support:
+        support_1:
+            label: bioinformatica@izs.it
+            url: mailto:bioinformatica@izs.it
+        support_2:
+            label: +39 0861 3321
+            url: tel:+3908613321
+    tools:
+        tool_1:
+            icon: iconic-print
+            label: PDF Version
+            target: _blank
+            url: https://genpat.izs.it/wiki/en/pdf/genpat-platform-wiki.pdf
+    copyright: IZSAM "G. Caporale"
+
+# when setted to true the url will point to the folder [about/]
+# if false will point to the index inside the folder [about/index.html]
+# it is important to set false if you want to serve file locally with no server
+use_directory_urls: false
+
+markdown_extensions:
+    codehilite:
+        use_pygments: true
+    plantuml_markdown:
+        server: ""
+    toc:
+        permalink: []
+        toc_depth: "2-3"
+# pygmentize -S default -f html -a .codehilite > styles.css
+# to generate css file for code higlighting
+
+theme:
+  name: bioinformatic-izsam-theme
+
+plugins:
+    - izsam-search:
+          separator: '[\s\-\.\-\_]+'
+          min_search_length: 2
+    - mkdocs-izsam-video
+    - set_home_page_plugin
+    - journal_plugin
+    - list_subfolders_plugin
+    - macros:
+        module_name: main

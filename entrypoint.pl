@@ -3,6 +3,7 @@
 my $default_template="/wiki/templates/template.docx";
 my $default_docs_folder="docs";  # Default relative path
 my $default_index_file="index.md";  # Default index file
+my $mkdocs=0;
 #
 #--------------------------------------------------
 #  PARAMETERS CHECK
@@ -18,6 +19,9 @@ for(my $i=0; $i<@ARGV; $i++) {
 	if($ARGV[$i] =~ /--efsa/i) {
 		$efsa=1;
 	}
+  if($ARGV[$i] =~ /--mkdocs/i) {
+    $mkdocs=1;
+  }
 	if($ARGV[$i] =~ /--template/i) {
 		$usetemplate=1;
 		$template=($i+1 < @ARGV)? 
@@ -82,6 +86,19 @@ print "#  Loading fonts...\n";
 command("mkdir -p /wiki/cache");
 command("HOME=/wiki/cache fc-cache -fv");
 # concat
+if ($mkdocs) {
+  print "#  MkDocs mode enabled\n";
+  print "# Running concat_md_files_for_mkdocs.py: concatenate all the md files\n";
+  command("python /app/bin/concat_md_files_for_mkdocs.py --docs-dir $docs_folder --index-file $index_file");
+  print "#  copying mkdocs_cfg.yml\n";
+  if (! -d "/wiki/target/md_for_mkdocs") {
+    command("mkdir -p /wiki/target/md_for_mkdocs");
+  }
+  command("cp /app/bin/mkdocs_cfg.yml /wiki/target/md_for_mkdocs/");
+  command("cp /app/plugins/init/main.py /wiki/target/md_for_mkdocs/");
+  print "#  Running mkdocs build\n";
+  command("mkdocs build -f /wiki/target/md_for_mkdocs/mkdocs_cfg.yml --site-dir /wiki/target/md_for_mkdocs/site");
+}
 print "# Running concat_md_files.py: concatenate all the md files\n";
 command("python /app/bin/concat_md_files.py --docs-dir $docs_folder --index-file $index_file");
 #
