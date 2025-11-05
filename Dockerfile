@@ -57,7 +57,7 @@ RUN python3 -m venv /venv
 # Activate the virtual environment and install dependencies
 RUN /venv/bin/pip install --no-cache-dir mkdocs==1.2.4 \
     mkdocs-izsam-search==0.1.9 \
-    mkdocs-bioinformatic-izsam-theme==1.0.12 \
+    mkdocs-bioinformatic-izsam-theme==1.0.13 \
     mkdocs-izsam-video==1.0.3 \
     mkdocs-redirects==1.2.0 \
     mkdocs-exclude==1.0.2 \
