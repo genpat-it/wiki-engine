@@ -18,6 +18,7 @@ plugins:
     - izsam-search:
           separator: '[\s\-\.\-\_]+'
           min_search_length: 2
+    - nav_only
     - mkdocs-izsam-video
     - set_home_page_plugin
     - journal_plugin

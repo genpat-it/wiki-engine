@@ -9,6 +9,7 @@ setup(
             'journal_plugin = mkdocs_journal_plugin:JournalPlugin',
             'list_subfolders_plugin = mkdocs_list_subfolders_plugin:ListSubfoldersPlugin',
             'set_home_page_plugin = mkdocs_set_home_page_plugin:SetHomePagePlugin',
+            'nav_only = mkdocs_nav_only_plugin.plugin:NavOnlyPlugin',
         ]
     }
 )

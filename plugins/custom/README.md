@@ -143,3 +143,35 @@ nav:
 ```
 
 In this example, the `custom_home.md` file will be set as the home page of the documentation.
+
+## Nav Only Plugin (mkdocs_nav_only_plugin)
+
+The `NavOnlyPlugin` is a custom MkDocs plugin that limits the build output to Markdown pages declared in the `nav` section. Non-documentation files (assets, images, etc.) are preserved.
+
+### Configuration
+
+To configure the `NavOnlyPlugin`, add it to the `plugins` section of your `mkdocs.yml` file:
+
+```yaml
+plugins:
+  - nav_only
+```
+
+#### Options
+
+* No options.
+
+### Usage
+
+Declare the pages you want to build in `nav`. Any Markdown file not listed in `nav` will not be rendered to HTML.
+
+#### Example configuration
+
+```yaml
+nav:
+  - Home: index.md
+  - About: about.md
+
+plugins:
+  - nav_only
+```
