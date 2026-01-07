@@ -55,7 +55,8 @@ RUN apt-get update && apt-get install -y python3 python3-pip python3-venv && apt
 RUN python3 -m venv /venv
 
 # Activate the virtual environment and install dependencies
-RUN /venv/bin/pip install --no-cache-dir mkdocs==1.2.4 \
+RUN printf "pydyf==0.10.0\nweasyprint==62.3\n" > /tmp/pip-constraints.txt
+RUN /venv/bin/pip install --no-cache-dir -c /tmp/pip-constraints.txt mkdocs==1.2.4 \
     mkdocs-izsam-search==0.1.9 \
     mkdocs-bioinformatic-izsam-theme==1.0.13 \
     mkdocs-izsam-video==1.0.3 \
@@ -69,6 +70,7 @@ RUN /venv/bin/pip install --no-cache-dir mkdocs==1.2.4 \
     mkdocs-with-pdf==0.9.3 \
     qrcode==7.3.1 \
     weasyprint==62.3 \
+    pydyf==0.10.0 \
     filelock==3.17.0
 
 # Ensure the virtual environment is activated when running commands
@@ -94,8 +96,11 @@ RUN apt-get update && \
     rm -rf pandoc-2.5 pandoc-2.5-linux.tar.gz
 
 # Install pandoc-plantuml filter
-RUN /venv/bin/pip install pandoc-plantuml-filter && \
+RUN /venv/bin/pip install --no-cache-dir -c /tmp/pip-constraints.txt pandoc-plantuml-filter && \
     ln -s /venv/bin/pandoc-plantuml /usr/local/bin/pandoc-plantuml
+
+# Ensure pinned PDF stack versions after all installs
+RUN /venv/bin/pip install --no-cache-dir --force-reinstall --no-deps pydyf==0.10.0
 
 # Install draw.io
 RUN wget -q https://github.com/jgraph/drawio-desktop/releases/download/v${DRAWIO_VERSION}/drawio-amd64-${DRAWIO_VERSION}.deb && \
