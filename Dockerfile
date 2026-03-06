@@ -58,7 +58,7 @@ RUN python3 -m venv /venv
 RUN printf "pydyf==0.10.0\nweasyprint==62.3\n" > /tmp/pip-constraints.txt
 RUN /venv/bin/pip install --no-cache-dir -c /tmp/pip-constraints.txt mkdocs==1.2.4 \
     mkdocs-izsam-search==0.1.9 \
-    mkdocs-bioinformatic-izsam-theme==1.0.13 \
+    mkdocs-bioinformatic-izsam-theme==1.0.14 \
     mkdocs-izsam-video==1.0.3 \
     mkdocs-redirects==1.2.0 \
     mkdocs-exclude==1.0.2 \
